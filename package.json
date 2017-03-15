@@ -1,0 +1,22 @@
+{
+  "name": "lank",
+  "version": "0.0.1",
+  "description": "Link and control a bunch of repositories.",
+  "main": "index.js",
+  "repository": "https://github.com/FormidableLabs/lank.git",
+  "author": "Ryan Roemer <ryan.roemer@formidable.com>",
+  "license": "MIT",
+  "bin": {
+    "lank": "bin/lank.js"
+  },
+  "scripts": {
+    "lint": "eslint bin",
+    "check": "npm run lint"
+  },
+  "devDependencies": {
+    "eslint": "^2.13.1",
+    "eslint-config-formidable": "^2.0.1",
+    "eslint-plugin-filenames": "^1.1.0",
+    "eslint-plugin-import": "^2.0.1"
+  }
+}
