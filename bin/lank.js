@@ -1,4 +1,6 @@
 #!/usr/bin/env node
 "use strict";
 
-console.log("lank is dank"); // eslint-disable-line no-console
+const opts = require("../lib/args").parse();
+
+console.log("lank options: ", JSON.stringify(opts, null, 2)); // eslint-disable-line
