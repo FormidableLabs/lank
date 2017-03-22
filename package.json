@@ -6,24 +6,31 @@
   "repository": "https://github.com/FormidableLabs/lank.git",
   "author": "Ryan Roemer <ryan.roemer@formidable.com>",
   "license": "MIT",
-  "engines" : {
-    "node" : ">=4.0.0"
+  "engines": {
+    "node": ">=4.0.0"
   },
   "bin": {
     "lank": "bin/lank.js"
   },
   "scripts": {
-    "lint": "eslint bin lib",
-    "check": "npm run lint"
+    "lint": "eslint bin lib test",
+    "test": "mocha --opts test/server/mocha.opts test/server/spec",
+    "check": "npm run lint && npm run test"
   },
   "dependencies": {
     "commander": "^2.9.0"
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",
+    "chai": "^3.5.0",
     "eslint": "^2.13.1",
     "eslint-config-formidable": "^2.0.1",
     "eslint-plugin-filenames": "^1.1.0",
-    "eslint-plugin-import": "^2.0.1"
+    "eslint-plugin-import": "^2.0.1",
+    "eval": "^0.1.2",
+    "mocha": "^3.2.0",
+    "mock-fs": "^4.2.0",
+    "sinon": "^2.1.0",
+    "sinon-chai": "^2.9.0"
   }
 }
