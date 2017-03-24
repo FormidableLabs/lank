@@ -6,11 +6,22 @@
  *
  * - Mocking filesystem
  */
+const lank = require("../../../../bin/lank");
 //const base = require("../base.spec");
-//const lank = require("../../../../bin/lank");
 
 describe("bin/lank", () => {
 
-  it("TODO - implement specs");
+  describe(".lankrc", () => {
+
+    it("errors on missing RC file", () => {
+      return lank()
+        .catch((err) => {
+          expect(err).to.have.property("message").that.contains("configuration data");
+        });
+    });
+
+    it("TODO - MORE TESTS HERE");
+
+  });
 
 });

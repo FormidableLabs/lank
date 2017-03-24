@@ -46,7 +46,7 @@ beforeEach(() => {
 
   // Node `4`+ can't `require` from the mocked filesystem, so hackily
   // approximate here.
-  base.sandbox.stub(util, "_require", (mod) => {
+  base.sandbox.stub(util, "_require").callsFake((mod) => {
     try {
       return require(mod); // eslint-disable-line global-require
     } catch (err) {
