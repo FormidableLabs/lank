@@ -3,7 +3,7 @@
 const config = require("../../../../lib/config");
 const base = require("../base.spec");
 
-const minimalCfg = {};
+const minimalCfg = [];
 const toJson = (code) => JSON.stringify(code);
 const toJs = (code) => `module.exports = ${JSON.stringify(code)};`;
 

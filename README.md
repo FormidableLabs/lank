@@ -52,11 +52,11 @@ PROJECTS/
   three/
 ```
 
-If you would like to link the projects and run tasks from `PROJECT`, then you
+If you would like to link the projects and run tasks from `PROJECTS`, then you
 should create a:
 
 ```sh
-PROJECT/.lankrc.js
+PROJECTS/.lankrc.js
 ```
 
 However, this could be problematic if you want multiple `lank` controlled groups
@@ -64,7 +64,7 @@ of projects. The other alternative is to select the project that is the
 "main control" project and place the rc file there. Say, for example `one`:
 
 ```sh
-PROJECT/
+PROJECTS/
   one/.lankrc.js
 ```
 
@@ -74,9 +74,28 @@ if it finds a `.lankrc.js` file. In either case, the project directories for all
 linked files will be checked for presence, otherwise `lank` will throw a
 configuration error.
 
-* TODO(INITIAL): Feature - `${PWD}/.lankrc`, `${PWD}/../.lankrc`
+The `.lankrc.js` file is simply an array of strings where each string
+corresponds to the published `package.json:name` of a package _and_ is the name
+of a directory at the same level as all other project directories controlled by
+`lank`. For example:
+
+```js
+// `.lankrc.json`
+[
+  "one",
+  "two",
+  "three"
+]
+
+// `.lankrc.js`
+module.exports = [
+  "one",
+  "two",
+  "three"
+];
+```
+
 * TODO(INITIAL): Document examples of rc files.
-* TODO(INITIAL): Add tests for logic of lankrc traversal
 * TODO(INITIAL): Add tests for logic of lankrc verification of projects
 * TODO(INITIAL): Two lankrcs - (1) valid at both levels, (2) invalid at one lvl.
 
@@ -91,6 +110,10 @@ configuration error.
 
 ## Tips and Tricks
 
-* TODO(INITIAL): package.json - node engines restrictions
+* The name of the Node modules must correspond to the directory name of the
+  project on disk. For example, if you are linking the `foo` project normally
+  found in `node_modules/foo`, it now _must_ be named `foo` on the local
+  file system relative to the directories that `lank` controls.
+
 * TODO(INITIAL): Document - webpack
 * TODO(INITIAL): eslint
