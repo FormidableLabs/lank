@@ -40,8 +40,27 @@ describe("lib/config", () => {
         });
     });
 
-    it("resolves ../PWD/lankrc.js");
-    it("resolves ../PWD/lankrc.json");
+    it("resolves ../PWD/lankrc.js", () => {
+      base.mockFs({
+        "../.lankrc.js": toJs(minimalCfg)
+      });
+
+      return config.getConfig()
+        .catch((err) => {
+          expect(err).to.not.be.ok;
+        });
+    });
+
+    it("resolves ../PWD/lankrc.json", () => {
+      base.mockFs({
+        "../.lankrc.json": toJson(minimalCfg)
+      });
+
+      return config.getConfig()
+        .catch((err) => {
+          expect(err).to.not.be.ok;
+        });
+    });
 
   });
 
