@@ -1,5 +1,6 @@
-### SublimeText ###
+### Editors ###
 *.sublime-workspace
+*.vscode
 
 ### OSX ###
 .AppleDouble
