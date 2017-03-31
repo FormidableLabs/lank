@@ -9,6 +9,17 @@ const toJs = (code) => `module.exports = ${JSON.stringify(code)};`;
 
 describe("lib/config", () => {
 
+  describe("#_normalizeConfig", () => {
+    const norm = config._normalizeConfig;
+
+    it("handles empty cases", () => {
+      expect(norm()).to.eql([]);
+      expect(norm(null)).to.eql([]);
+      expect(norm([])).to.eql([]);
+      expect(norm({})).to.eql([]);
+    });
+  });
+
   describe("#getConfig", () => {
 
     it("errors on missing RC file", () => {
@@ -23,10 +34,7 @@ describe("lib/config", () => {
         ".lankrc.js": toJs(minimalCfg)
       });
 
-      return config.getConfig()
-        .catch((err) => {
-          expect(err).to.not.be.ok;
-        });
+      return config.getConfig();
     });
 
     it("resolves PWD/lankrc.json", () => {
@@ -34,10 +42,7 @@ describe("lib/config", () => {
         ".lankrc.json": toJson(minimalCfg)
       });
 
-      return config.getConfig()
-        .catch((err) => {
-          expect(err).to.not.be.ok;
-        });
+      return config.getConfig();
     });
 
     it("resolves ../PWD/lankrc.js", () => {
@@ -45,10 +50,7 @@ describe("lib/config", () => {
         "../.lankrc.js": toJs(minimalCfg)
       });
 
-      return config.getConfig()
-        .catch((err) => {
-          expect(err).to.not.be.ok;
-        });
+      return config.getConfig();
     });
 
     it("resolves ../PWD/lankrc.json", () => {
@@ -56,9 +58,19 @@ describe("lib/config", () => {
         "../.lankrc.json": toJson(minimalCfg)
       });
 
+      return config.getConfig();
+    });
+
+    it("TODO: chooses PWD/lankrc.js over ../PWD/lankrc.js");
+
+    it("errors on non-Array lankrc", () => {
+      base.mockFs({
+        ".lankrc.js": toJs({})
+      });
+
       return config.getConfig()
         .catch((err) => {
-          expect(err).to.not.be.ok;
+          expect(err).to.have.property("message").that.contains("must be an array");
         });
     });
 

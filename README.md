@@ -74,6 +74,8 @@ if it finds a `.lankrc.js` file. In either case, the project directories for all
 linked files will be checked for presence, otherwise `lank` will throw a
 configuration error.
 
+#### Simple Version
+
 The `.lankrc.js` file is simply an array of strings where each string
 corresponds to the published `package.json:name` of a package _and_ is the name
 of a directory at the same level as all other project directories controlled by
@@ -93,6 +95,36 @@ module.exports = [
   "two",
   "three"
 ];
+```
+
+#### Advanced Version
+
+The `.lankrc.js` file can also be an object supporting the following fields:
+
+- `module`: The string name of the module at issue.
+- `tags`: A string for single tag or array of strings for multiple tags. Tags
+  are used to filter multi-project commands.
+
+`lank` supports two formats for advanced configuration objects - a longhand one:
+
+```js
+// `.lankrc.js`
+module.exports = [
+  { module: "one" },
+  { module: "two", tags: "foo" },
+  { module: "one", tags: ["foo", "bar"] }
+];
+```
+
+and a shorthand object form:
+
+```js
+// `.lankrc.js`
+module.exports = {
+  one: {},
+  two: { tags: "foo" },
+  three: { tags: ["foo", "bar"] }
+};
 ```
 
 * TODO(INITIAL): Document examples of rc files.
