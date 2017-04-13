@@ -131,14 +131,56 @@ module.exports = {
 * TODO(INITIAL): Add tests for logic of lankrc verification of projects
 * TODO(INITIAL): Two lankrcs - (1) valid at both levels, (2) invalid at one lvl.
 
-### Deleting
+## Running a Project
 
-* TODO(INITIAL): Document and implement deleting.
+Workflows with `lank` circle around a root "controlling" project that you will
+change directory into and run:
+
+```sh
+$ cd /PATH/TO/PROJECTS/my_control_project
+$ lank <commands>
+```
+
+`lank` will base working directory paths for all linked projects off this
+assumption, and it will error out if it does not find a directory structure
+that matches the configuration files.
+
+**Side Note -- What is a "controlling" project?**: We use `lank` to control
+2+ interrelated projects that need simultaneous changes. The controlling project
+is usually the "most upstream" one that is not depended on by any other project.
+For example, this would likely be your application that then "controls" many
+linked library projects. Ultimately, it doesn't really matter that much as long
+as the `lank` commands are executed from within the root project directory of
+_any_ linked project.
+
+As we learned above, that project must have a `.lankrc` file in one of:
+
+```sh
+/PATH/TO/PROJECTS/my_control_project/.lankrc.js
+/PATH/TO/PROJECTS/.lankrc.js
+```
+
+The _other_ linked projects must be located at the same location as the control
+project:
+
+```sh
+/PATH/TO/PROJECTS/my_control_project
+/PATH/TO/PROJECTS/my_linked_project_01
+/PATH/TO/PROJECTS/my_linked_project_02
+```
 
 ### Workflow
 
 * TODO(INITIAL): Document and implement exec's and tasks.
 * TODO(INITIAL): Feature - multi `exec`
+
+### Deleting
+
+* TODO(INITIAL): Document and implement deleting.
+
+### Shell Commands
+
+* TODO(INITIAL): Document and implement deleting.
 
 ## Tips and Tricks
 

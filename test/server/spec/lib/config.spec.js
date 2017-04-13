@@ -77,6 +77,9 @@ describe("lib/config", () => {
 
     it("errors on missing RC file", () => {
       return config.getConfig()
+        .then(() => {
+          expect("should throw").to.be.false;
+        })
         .catch((err) => {
           expect(err).to.have.property("message").that.contains("configuration data");
         });
@@ -117,7 +120,8 @@ describe("lib/config", () => {
     it("chooses PWD/lankrc.js over ../PWD/lankrc.js", () => {
       base.mockFs({
         ".lankrc.js": toJs({ pwd: {} }),
-        "../.lankrc.js": toJs({ belowPwd: {} })
+        "../.lankrc.js": toJs({ belowPwd: {} }),
+        "../pwd": {}
       });
 
       return config.getConfig()
@@ -126,14 +130,34 @@ describe("lib/config", () => {
         });
     });
 
-    it("errors on non-Array lankrc", () => {
+    it("errors on missing linked directories", () => {
       base.mockFs({
-        ".lankrc.js": toJs({})
+        ".lankrc.js": toJs(["one", "two"]),
+        "../one": {}
       });
 
       return config.getConfig()
+        .then(() => {
+          expect("should throw").to.be.false;
+        })
         .catch((err) => {
-          expect(err).to.have.property("message").that.contains("must be an array");
+          expect(err).to.have.property("message").that.contains("not found");
+        });
+    });
+
+    it("errors on non-directory linked file", () => {
+      base.mockFs({
+        ".lankrc.js": toJs(["one", "two"]),
+        "../one": {},
+        "../two": "not a directory"
+      });
+
+      return config.getConfig()
+        .then(() => {
+          expect("should throw").to.be.false;
+        })
+        .catch((err) => {
+          expect(err).to.have.property("message").that.contains("not a directory");
         });
     });
 
