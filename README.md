@@ -173,6 +173,7 @@ project:
 
 * TODO(INITIAL): Document and implement exec's and tasks.
 * TODO(INITIAL): Feature - multi `exec`
+* TODO(INITIAL): Tags
 
 ### Deleting
 
