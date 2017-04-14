@@ -6,18 +6,28 @@
  *
  * - Mocking filesystem
  */
+const program = require("commander");
+
 const lank = require("../../../../bin/lank");
 const util = require("../../util");
 const toJs = util.toJs;
 
 const base = require("../base.spec");
 
+// Helper argv arrays.
+const ARGV_NO_ARGS = ["node", "lank.js"];
+const ARGV_EXEC_PWD = ["node", "lank.js", "exec", "--", "pwd"];
+
 describe("bin/lank", () => {
+
+  beforeEach(() => {
+    base.sandbox.stub(program, "help");
+  });
 
   describe(".lankrc", () => {
 
     it("errors on missing RC file", () => {
-      return lank()
+      return lank(ARGV_EXEC_PWD)
         .then(() => {
           expect("should throw").to.be.false;
         })
@@ -32,7 +42,7 @@ describe("bin/lank", () => {
         "../one": {}
       });
 
-      return lank()
+      return lank(ARGV_EXEC_PWD)
         .then(() => {
           expect("should throw").to.be.false;
         })
@@ -40,6 +50,8 @@ describe("bin/lank", () => {
           expect(err).to.have.property("message").that.contains("not found");
         });
     });
+
+    it("TODO: errors if controlling project isn't linked");
 
     it("succeeds with valid config and directories", () => {
       base.mockFs({
@@ -51,9 +63,20 @@ describe("bin/lank", () => {
         "../two": {}
       });
 
-      return lank(["node", "lank.js"]);
+      return lank(ARGV_NO_ARGS);
     });
 
+  });
+
+  describe("help", () => {
+    it("TODO: shows help on --help flag");
+    it("TODO: shows help on no actions");
+    it("TODO: shows help on no actions with extra arguments");
+  });
+
+  describe("actions", () => {
+    it("TODO: errors on missing action");
+    it("TODO: errors on multiple actions");
   });
 
 });

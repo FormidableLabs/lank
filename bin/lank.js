@@ -2,13 +2,32 @@
 "use strict";
 
 const parse = require("../lib/args").parse;
-const config = require("../lib/config");
+const getConfig = require("../lib/config").getConfig;
+const actions = require("../lib/actions");
 
 const main = module.exports = (argv) => {
   const args = parse(argv);
+  let cfg;
 
-  return config.getConfig()
-    .then((cfg) => ({ args, cfg }));
+  return getConfig()
+    // Get configuration.
+    .then((resolvedCfg) => { cfg = resolvedCfg; })
+    // Run action.
+    .then(() => {
+      // No action invokes help, so skip here.
+      // (If in tests -- normally we've already process.exit()-ed).
+      if (!args.action) { return null; }
+
+      // Get action.
+      const action = actions[args.action];
+      if (!action) {
+        throw new Error(`Unrecognized action: '${args.action}'`);
+      }
+
+      return action(cfg, args);
+    })
+    // Return args, configuration.
+    .then(() => ({ cfg, args }));
 };
 
 if (require.main === module) {
