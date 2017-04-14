@@ -4,6 +4,7 @@
 const parse = require("../lib/args").parse;
 const getConfig = require("../lib/config").getConfig;
 const actions = require("../lib/actions");
+const fmt = require("../lib/util").fmt;
 
 const main = module.exports = (argv) => {
   const args = parse(argv);
@@ -33,7 +34,7 @@ const main = module.exports = (argv) => {
 if (require.main === module) {
   main()
     .then((obj) => {
-      console.log("TODO: lank setup: ", obj); // eslint-disable-line
+      console.log(fmt("cyan", "lank", "main", JSON.stringify(obj, null, 2))); // eslint-disable-line
     })
     .catch((err) => {
       // Try to get full stack, then full string if not.
