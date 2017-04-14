@@ -65,7 +65,6 @@ describe("bin/lank", () => {
 
       return lank(ARGV_NO_ARGS);
     });
-
   });
 
   describe("help", () => {
@@ -77,6 +76,9 @@ describe("bin/lank", () => {
   describe("actions", () => {
     it("TODO: errors on missing action");
     it("TODO: errors on multiple actions");
+    it("TODO: errors if tags filter to no actions");
+    it("TODO: runs on all projects if no tags");
+    it("TODO: filters actions based on tags");
   });
 
 });
