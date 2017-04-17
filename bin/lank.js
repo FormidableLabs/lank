@@ -3,7 +3,7 @@
 
 const parse = require("../lib/args").parse;
 const getConfig = require("../lib/config").getConfig;
-const fmt = require("../lib/util").fmt;
+const getFmt = require("../lib/util").getFmt;
 
 const main = module.exports = (argv) => {
   const args = parse(argv);
@@ -20,9 +20,14 @@ const main = module.exports = (argv) => {
 
 if (require.main === module) {
   main()
-    .then((obj) => { // eslint-disable-line
-      console.log(fmt("cyan", "lank", "main", JSON.stringify(obj, null, 2))); // eslint-disable-line
+    /*eslint-disable*/
+    .then((obj) => {
+      const fmt = getFmt(obj.cfg);
+      console.log(fmt({
+        color: "cyan", key: "main", msg: `TODO DEBUG ARGS, CFG:\n${JSON.stringify(obj, null, 2)}`
+      }));
     })
+    /*eslint-enable*/
     .catch((err) => {
       // Try to get full stack, then full string if not.
       console.error(err.stack || err.toString()); // eslint-disable-line no-console
