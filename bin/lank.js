@@ -8,20 +8,19 @@ const fmt = require("../lib/util").fmt;
 const main = module.exports = (argv) => {
   const args = parse(argv);
   const action = (args || {}).action || (() => {});
-  let cfg;
 
+  // Get configuration.
   return getConfig()
-    // Get configuration.
-    .then((resolvedCfg) => { cfg = resolvedCfg; })
-    // Run action.
-    .then(() => action(cfg, args))
-    // Return args, configuration.
-    .then(() => ({ cfg, args }));
+    // Run action, return args, configuration.
+    .then((cfg) => {
+      action(cfg, args);
+      return { cfg, args };
+    });
 };
 
 if (require.main === module) {
   main()
-    .then((obj) => {
+    .then((obj) => { // eslint-disable-line
       console.log(fmt("cyan", "lank", "main", JSON.stringify(obj, null, 2))); // eslint-disable-line
     })
     .catch((err) => {

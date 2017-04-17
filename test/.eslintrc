@@ -1,6 +1,6 @@
 ---
 extends:
-  - "formidable/configurations/es6-node"
+  - "../.eslintrc"
 
 env:
   mocha: true
@@ -9,6 +9,7 @@ globals:
   expect: false
 
 rules:
-  no-unused-expressions: 0  # Disable for Chai expression assertions.
-  max-nested-callbacks: 0   # Disable for nested describes.
-  no-magic-numbers: 0
+  no-unused-expressions: "off"  # Disable for Chai expression assertions.
+  max-nested-callbacks: "off"   # Disable for nested describes.
+  no-magic-numbers: "off"
+  promise/always-return: "off"  # Just have `expect()` calls in `.then()`s.
