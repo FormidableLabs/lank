@@ -83,6 +83,7 @@ describe("bin/lank", () => {
 
   describe("exec", () => {
     it("TODO: limits to tags");
+    it("TODO: limits to modules");
     it("TODO: errors if no shell command is given");
     it("TODO: execs a process");
     it("TODO: does not spawn a process on dry-run");
@@ -90,6 +91,7 @@ describe("bin/lank", () => {
 
   describe("link", () => {
     it("TODO: limits to tags");
+    it("TODO: limits to modules");
     it("TODO: finds node_modules/foo");
     it("TODO: removes symlinks");
     it("TODO: finds node_modules/nested/node_modules/foo");
