@@ -10,7 +10,7 @@
  */
 const path = require("path");
 const mockFs = require("mock-fs");
-const fs = require("fs");
+const fs = require("fs-extra");
 const sinon = require("sinon");
 const _eval = require("eval");
 
