@@ -84,13 +84,16 @@ describe("bin/lank", () => {
   describe("exec", () => {
     it("TODO: limits to tags");
     it("TODO: execs a process");
+    it("TODO: does not spawn a process on dry-run");
   });
 
-  describe("del", () => {
+  describe("link", () => {
     it("TODO: limits to tags");
     it("TODO: finds node_modules/foo");
+    it("TODO: removes symlinks");
     it("TODO: finds node_modules/nested/node_modules/foo");
     it("TODO: finds node_modules/nested1/node_modules/nested2/node_modules/foo");
+    it("TODO: does not delete files on dry-run");
   });
 
 });

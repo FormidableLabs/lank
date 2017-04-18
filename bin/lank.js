@@ -27,7 +27,7 @@ if (require.main === module) {
     .then((obj) => {
       const fmt = getFmt(obj.cfg);
       console.log(fmt({
-        color: "cyan", key: "main", msg: `TODO DEBUG ARGS, CFG:\n${JSON.stringify(obj, null, 2)}`
+        color: "cyan", key: "main", msg: `TODO DEBUG: ${JSON.stringify(obj)}`
       }));
     })
     /*eslint-enable*/

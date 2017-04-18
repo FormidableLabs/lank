@@ -175,7 +175,7 @@ project:
 * TODO(INITIAL): Feature - multi `exec`
 * TODO(INITIAL): Tags
 
-### Deleting
+### Linking Projects
 
 * TODO(INITIAL): Document and implement deleting.
 
