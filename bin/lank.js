@@ -8,14 +8,17 @@ const getFmt = require("../lib/util").getFmt;
 const main = module.exports = (argv) => {
   const args = parse(argv);
   const action = (args || {}).action || (() => {});
+  let cfg;
 
   // Get configuration.
   return getConfig()
-    // Run action, return args, configuration.
-    .then((cfg) => {
-      action(cfg, args);
-      return { cfg, args };
-    });
+    // Stash config, run action.
+    .then((cfgObj) => {
+      cfg = cfgObj;
+      return action(cfg, args);
+    })
+    // Return config, args.
+    .then(() => ({ cfg, args }));
 };
 
 if (require.main === module) {

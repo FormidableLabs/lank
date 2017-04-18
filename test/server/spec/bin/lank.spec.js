@@ -81,4 +81,16 @@ describe("bin/lank", () => {
     it("TODO: filters actions based on tags");
   });
 
+  describe("exec", () => {
+    it("TODO: limits to tags");
+    it("TODO: execs a process");
+  });
+
+  describe("del", () => {
+    it("TODO: limits to tags");
+    it("TODO: finds node_modules/foo");
+    it("TODO: finds node_modules/nested/node_modules/foo");
+    it("TODO: finds node_modules/nested1/node_modules/nested2/node_modules/foo");
+  });
+
 });
