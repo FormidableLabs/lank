@@ -83,6 +83,7 @@ describe("bin/lank", () => {
 
   describe("exec", () => {
     it("TODO: limits to tags");
+    it("TODO: errors if no shell command is given");
     it("TODO: execs a process");
     it("TODO: does not spawn a process on dry-run");
   });
