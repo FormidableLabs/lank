@@ -45,7 +45,7 @@ describe("lib/config", () => {
       ]);
       expect(norm({
         one: {},
-        two: { tags: ["foo"] },
+        two: { tags: "foo" },
         three: { tags: ["foo", "bar"] }
       })).to.eql([
         { module: "one", tags: [] },
