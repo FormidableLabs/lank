@@ -129,6 +129,46 @@ module.exports = {
 };
 ```
 
+#### Scoped Modules
+
+If your project has a scoped published name like `@org/foo`, then your directory
+structure on disk must reflect that as well. So our example above may look
+something instead like:
+
+```sh
+PROJECTS/
+  @org/
+    one/
+    two/
+    three/
+```
+
+with a `.lankrc.js` file of:
+
+```js
+module.exports = [
+  "@org/one",
+  "@org/two",
+  "@org/three"
+];
+```
+
+Unfortunately, the directory path of the actual module name is required, `@`
+symbol and all.
+
+Also note that for `.lankrc.js` resolution, the rules would be something like:
+
+```sh
+# If we're in `one`, look in CWD first.
+PROJECTS/@org/one/.lankrc.js
+
+# If not, look **two** levels down since we're in a scoped project.
+PROJECTS/.lankrc.js
+```
+
+This scheme allows you to link both scoped and non-scoped projects in the same
+directory structure.
+
 ## Running a Project
 
 Workflows with `lank` circle around a root "controlling" project that you will

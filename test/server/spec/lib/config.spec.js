@@ -131,6 +131,9 @@ describe("lib/config", () => {
         });
     });
 
+    it("TODO: resolves ../../@SCOPE/PROJ/lankrc.js");
+    it("TODO: chooses PWD/lankrc.js over ../../@SCOPE/PROJ/lankrc.js");
+
     it("errors on missing linked directories", () => {
       base.mockFs({
         ".lankrc.js": toJs(["one", "two"]),

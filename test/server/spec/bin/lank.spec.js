@@ -50,6 +50,8 @@ describe("bin/lank", () => {
         });
     });
 
+    // TODO HERE
+    // TODO: Then on to scoped `.lankrc.js` resolution.
     it("TODO: errors if controlling project isn't linked");
 
     it("succeeds with valid config and directories", () => {
@@ -84,6 +86,8 @@ describe("bin/lank", () => {
     it("TODO: errors if no shell command is given");
     it("TODO: execs a process");
     it("TODO: does not spawn a process on dry-run");
+    it("TODO: updates NODE_PATH to .. when run in a normal module");
+    it("TODO: updates NODE_PATH to ../.. when run in a scoped module");
     it("TODO: limits to tags");
     it("TODO: limits to modules");
   });
