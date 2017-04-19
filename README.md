@@ -224,8 +224,48 @@ cross-dependencies. We then run `lank link` to actually perform the deletion.
 ### Shell Commands
 
 Once you have `lank link`-ed a project, all projects effectively have "holes"
-for cross-dependencies. We then need an enhancement of where to look to find
-the live other projects.
+for cross-dependencies. We can use this to have the linked projects resolve to
+each other in source by running any commands in one project with an environment
+variables `NODE_PATH` that includes the value `..` which means "look one
+directory below CWD to find additional dependencies". (See our section on Node
+`require` resolution for a further explanation of this.)
+
+To help with this environment enhancement and for similar multi-repository
+workflows, `lank` provides the `exec` command, which runs the same command in
+all linked projects:
+
+```sh
+$ lank exec -- SHELL_COMMAND
+```
+
+Here are some basic examples:
+
+```sh
+# Print CWD
+$ lank exec -- pwd
+
+# Git status
+$ lank exec -- git status
+
+# yarn installation (note the `-s` flag which forces the execs to run in series,
+# one after the other -- yarn installs seem to have issues with fully concurrent
+# installs).
+$ lank exec -s -- yarn install
+```
+
+Sometimes, you only want to exec a command in some projects. This is where the
+`-t, --tags <tags>` flag commes in handy to run based on arbitrary tags and the
+`-m, --modules <modules>` flag is useful to limit to a list of named projects.
+
+```sh
+# Exec in projects configured with a (1) "foo" tag, (2) a "foo" or "bar" tag.
+$ lank exec -t foo -- pwd
+$ lank exec -t foo,bar -- pwd
+
+# Exec in specifically named projects
+$ lank exec -m one -- pwd
+$ lank exec -m one,two -- pwd
+```
 
 ## Notes, Tips, and Tricks
 
@@ -235,11 +275,6 @@ the live other projects.
   project on disk. For example, if you are linking the `foo` project normally
   found in `node_modules/foo`, it now _must_ be named `foo` on the local
   file system relative to the directories that `lank` controls.
-
-### TODO(INITIAL) SECTIONS
-
-* TODO(INITIAL): Document - webpack
-* TODO(INITIAL): eslint
 
 ### Node `require` Resolution
 
@@ -288,3 +323,8 @@ variable so that lookup up until `NODE_PATH` fails to find the cross-referenced
 project. That then leaves `NODE_PATH` to get the live `link`-ed project instead
 and **presto!** we have first class Node `require` integration with our custom
 projects instead of what's installed via `yarn|npm install`.
+
+### TODO(INITIAL) Additional Sections
+
+* TODO(INITIAL): Document - webpack
+* TODO(INITIAL): eslint
