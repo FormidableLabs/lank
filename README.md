@@ -221,6 +221,18 @@ $ lank link --dry-run
 `lank` has traversed the dependency trees in all linked projects and found the
 cross-dependencies. We then run `lank link` to actually perform the deletion.
 
+If you want to _undo_ the linking, simply reinstall all projects' dependencies
+with:
+
+```sh
+# Concurrent yarn installs are finicky, so install one at a time in serial.
+# Also "force" the install as manually deleted packages from `lank` won't be
+# necessarily reinstalled on a vanilla `yarn install` alone.
+$ lank exec -s -- yarn install --force
+# ... OR ...
+$ lank exec -s -- npm install
+```
+
 ### Shell Commands
 
 Once you have `lank link`-ed a project, all projects effectively have "holes"
@@ -247,10 +259,9 @@ $ lank exec -- pwd
 # Git status
 $ lank exec -- git status
 
-# yarn installation (note the `-s` flag which forces the execs to run in series,
-# one after the other -- yarn installs seem to have issues with fully concurrent
-# installs).
-$ lank exec -s -- yarn install
+# Install deps
+$ lank exec -s -- yarn install --force
+$ lank exec -s -- npm install
 ```
 
 Sometimes, you only want to exec a command in some projects. This is where the

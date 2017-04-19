@@ -116,12 +116,12 @@ describe("bin/lank", () => {
         });
     });
 
-    // TODO: HERE
     it("removes scoped packages", () => {
       base.mockFs({
         ".lankrc.js": toJs({
-          "@scope/one": { tags: ["awesome", "hot"] },
-          "@scope/two": { tags: ["awesome"] }
+          "one": { tags: ["awesome", "hot"] },
+          "@scope/two": { tags: ["awesome"] },
+          "three": {}
         }),
         "../one": {
           "node_modules": {
@@ -130,7 +130,12 @@ describe("bin/lank", () => {
                 "package.json": "{}"
               },
               "other": {
-                "package.json": "{}"
+                "package.json": "{}",
+                "node_modules": {
+                  "three": {
+                    "package.json": "{}"
+                  }
+                }
               }
             },
             "out-of-scope": {
@@ -138,14 +143,17 @@ describe("bin/lank", () => {
             }
           }
         },
-        "../two": {}
+        "../@scope/two": {},
+        "../three": {}
       });
 
       return lank(argv("link"))
         .then(() => {
-          expect(appUtil._stdoutWrite).to.be.calledWithMatch("Found 1 directories");
+          expect(appUtil._stdoutWrite).to.be.calledWithMatch("Found 2 directories");
           expect(base.fileExists("../one/node_modules/@scope/two")).to.be.false;
           expect(base.fileExists("../one/node_modules/@scope/other")).to.be.true;
+          expect(base.fileExists("../one/node_modules/@scope/other/node_modules/three"))
+            .to.be.false;
           expect(base.fileExists("../one/node_modules/out-of-scope")).to.be.true;
         });
     });
