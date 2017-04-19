@@ -9,14 +9,13 @@
 const program = require("commander");
 
 const lank = require("../../../../bin/lank");
-const util = require("../../util");
-const toJs = util.toJs;
+const toJs = require("../../util").toJs;
+const appUtil = require("../../../../lib/util");
 
 const base = require("../base.spec");
 
 // Helper argv arrays.
-const ARGV_NO_ARGS = ["node", "lank.js"];
-const ARGV_EXEC_PWD = ["node", "lank.js", "exec", "--", "pwd"];
+const argv = (extra) => ["node", "lank.js"].concat(extra || []);
 
 describe("bin/lank", () => {
 
@@ -27,7 +26,7 @@ describe("bin/lank", () => {
   describe(".lankrc", () => {
 
     it("errors on missing RC file", () => {
-      return lank(ARGV_EXEC_PWD)
+      return lank(argv(["exec", "--", "pwd"]))
         .then(() => {
           expect("should throw").to.be.false;
         })
@@ -42,7 +41,7 @@ describe("bin/lank", () => {
         "../one": {}
       });
 
-      return lank(ARGV_EXEC_PWD)
+      return lank(argv(["exec", "--", "pwd"]))
         .then(() => {
           expect("should throw").to.be.false;
         })
@@ -63,7 +62,7 @@ describe("bin/lank", () => {
         "../two": {}
       });
 
-      return lank(ARGV_NO_ARGS);
+      return lank(argv());
     });
   });
 
@@ -82,21 +81,48 @@ describe("bin/lank", () => {
   });
 
   describe("exec", () => {
-    it("TODO: limits to tags");
-    it("TODO: limits to modules");
     it("TODO: errors if no shell command is given");
     it("TODO: execs a process");
     it("TODO: does not spawn a process on dry-run");
+    it("TODO: limits to tags");
+    it("TODO: limits to modules");
   });
 
   describe("link", () => {
-    it("TODO: limits to tags");
-    it("TODO: limits to modules");
-    it("TODO: finds node_modules/foo");
+    it("finds node_modules/two", () => {
+      base.mockFs({
+        ".lankrc.js": toJs({
+          one: { tags: ["awesome", "hot"] },
+          two: { tags: ["awesome"] }
+        }),
+        "../one": {
+          "node_modules": {
+            "two": {
+              "package.json": "{}"
+            },
+            "other": {
+              "package.json": "{}"
+            }
+          }
+        },
+        "../two": {}
+      });
+
+      return lank(argv("link"))
+        .then(() => {
+          expect(appUtil._stdoutWrite).to.be.calledWithMatch("Found 1 directories");
+          expect(base.fileExists("../one/node_modules/two")).to.be.false;
+          expect(base.fileExists("../one/node_modules/other")).to.be.true;
+        });
+    });
+
+    it("TODO: removes scoped packages");
     it("TODO: removes symlinks");
     it("TODO: finds node_modules/nested/node_modules/foo");
     it("TODO: finds node_modules/nested1/node_modules/nested2/node_modules/foo");
     it("TODO: does not delete files on dry-run");
+    it("TODO: limits to tags");
+    it("TODO: limits to modules");
   });
 
 });

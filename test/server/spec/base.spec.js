@@ -50,6 +50,10 @@ beforeEach(() => {
     useFakeTimers: true
   });
 
+  // Stub stdout, stderr.
+  base.sandbox.stub(util, "_stdoutWrite");
+  base.sandbox.stub(util, "_stderrWrite");
+
   // Node `4`+ can't `require` from the mocked filesystem, so hackily
   // approximate here.
   base.sandbox.stub(util, "_require").callsFake((mod) => {
