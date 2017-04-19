@@ -117,7 +117,7 @@ describe("bin/lank", () => {
     });
 
     // TODO: HERE
-    it.skip("removes scoped packages", () => {
+    it("removes scoped packages", () => {
       base.mockFs({
         ".lankrc.js": toJs({
           "@scope/one": { tags: ["awesome", "hot"] },
