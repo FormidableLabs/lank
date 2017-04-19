@@ -3,7 +3,7 @@
 
 const chalk = require("chalk");
 
-const parse = require("../lib/args").parse;
+const argsMod = require("../lib/args");
 const getConfig = require("../lib/config").getConfig;
 
 const util = require("../lib/util");
@@ -13,7 +13,7 @@ let fmt = (args) => JSON.stringify(args);
 const ARGS_IDX = 2; // index where cli arguments start
 
 const main = module.exports = (argv) => {
-  const args = parse(argv) || {};
+  const args = argsMod.parse(argv) || {};
   const action = args.action || (() => {});
   const tags = args.tags || [];
   const mods = args.mods || [];
@@ -40,8 +40,15 @@ const main = module.exports = (argv) => {
 
       return action(cfg, args);
     })
-    // Return config, args.
-    .then(() => ({ cfg, args }));
+    // Ensure we've closed listeners, then return config, args.
+    .then(() => {
+      argsMod.close();
+      return { cfg, args };
+    })
+    .catch((err) => {
+      argsMod.close();
+      throw err;
+    });
 };
 
 if (require.main === module) {

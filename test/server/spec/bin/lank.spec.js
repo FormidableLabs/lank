@@ -116,7 +116,40 @@ describe("bin/lank", () => {
         });
     });
 
-    it("TODO: removes scoped packages");
+    // TODO: HERE
+    it.skip("removes scoped packages", () => {
+      base.mockFs({
+        ".lankrc.js": toJs({
+          "@scope/one": { tags: ["awesome", "hot"] },
+          "@scope/two": { tags: ["awesome"] }
+        }),
+        "../one": {
+          "node_modules": {
+            "@scope": {
+              "two": {
+                "package.json": "{}"
+              },
+              "other": {
+                "package.json": "{}"
+              }
+            },
+            "out-of-scope": {
+              "package.json": "{}"
+            }
+          }
+        },
+        "../two": {}
+      });
+
+      return lank(argv("link"))
+        .then(() => {
+          expect(appUtil._stdoutWrite).to.be.calledWithMatch("Found 1 directories");
+          expect(base.fileExists("../one/node_modules/@scope/two")).to.be.false;
+          expect(base.fileExists("../one/node_modules/@scope/other")).to.be.true;
+          expect(base.fileExists("../one/node_modules/out-of-scope")).to.be.true;
+        });
+    });
+
     it("TODO: removes symlinks");
     it("TODO: finds node_modules/nested/node_modules/foo");
     it("TODO: finds node_modules/nested1/node_modules/nested2/node_modules/foo");
