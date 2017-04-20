@@ -1,11 +1,14 @@
 "use strict";
 
+const path = require("path");
+
 const config = require("../../../../lib/config");
 const base = require("../base.spec");
 const util = require("../../util");
 const toJs = util.toJs;
 const toJson = util.toJson;
 
+const appUtil = require("../../../../lib/util");
 const minimalCfg = ["one"];
 
 describe("lib/config", () => {
@@ -108,7 +111,7 @@ describe("lib/config", () => {
       return config.getConfig();
     });
 
-    it("resolves ../PWD/lankrc.js", () => {
+    it("resolves lankrc.js", () => {
       base.mockFs({
         ".lankrc.js": toJs(minimalCfg),
         "one": {
@@ -119,7 +122,7 @@ describe("lib/config", () => {
       return config.getConfig();
     });
 
-    it("resolves ../PWD/lankrc.json", () => {
+    it("resolves one/lankrc.json", () => {
       base.mockFs({
         ".lankrc.json": toJson(minimalCfg),
         "one": {
@@ -130,7 +133,7 @@ describe("lib/config", () => {
       return config.getConfig();
     });
 
-    it("chooses PWD/lankrc.js over ../PWD/lankrc.js", () => {
+    it("chooses one/lankrc.js over lankrc.js", () => {
       base.mockFs({
         ".lankrc.js": toJs({ belowPwd: {} }),
         "one": {
@@ -141,15 +144,31 @@ describe("lib/config", () => {
 
       return config.getConfig()
         .then((cfg) => {
-          expect(cfg).to.eql([{ module: "one", tags: [] }]);
+          expect(cfg).to.eql([{
+            module: "one", tags: [], _lank: { control: true, siblingPath: ".." }
+          }]);
         });
+    });
+
+    it("resolves @org/red/lankrc.js", () => {
+      appUtil._cwd.returns(path.resolve("@org/red"));
+
+      base.mockFs({
+        "@org": {
+          "red": {
+            ".lankrc.json": toJson(["@org/red"]),
+            "package.json": JSON.stringify({ name: "@org/red" })
+          }
+        }
+      });
+
+      return config.getConfig();
     });
 
     // TODO HERE
     // TODO IMPLEMENT -- SCOPE DOWN TWO LEVELS
     // TODO VERIFY NODE_PATH ADJUST
-    it("TODO: resolves ../../@SCOPE/PROJ/lankrc.js");
-    it("TODO: chooses PWD/lankrc.js over ../../@SCOPE/PROJ/lankrc.js");
+    it("TODO: chooses @org/red/lankrc.js over lankrc.js");
 
     it("errors on missing linked directories", () => {
       base.mockFs({
