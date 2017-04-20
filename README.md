@@ -320,6 +320,22 @@ $ lank exec -m one -- pwd
 $ lank exec -m one,two -- pwd
 ```
 
+#### Output Buffering
+
+By default, `lank` buffers all output and displays it once the underyling
+processes end. This is nice for processes that _do_ end since you don't get
+random process output crossing streams in your terminal during execution. But,
+this scheme doesn't really work well for `exec`'s that are meant to be
+long-lived or persistent processes, such as a file build watch.
+
+In these cases, use the `-u` / `--unbuffered` flag to just have output
+splattered to stdout/stderr as it happens, with some helpful prefixes to
+indicate which project the output came from. For example:
+
+```sh
+$ lank exec -u -- npm run watch-files
+```
+
 ## Notes, Tips, and Tricks
 
 ### Miscellaneous
