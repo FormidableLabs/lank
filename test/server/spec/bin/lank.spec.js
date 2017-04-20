@@ -121,26 +121,96 @@ describe("bin/lank", () => {
       base.sandbox.stub(childProcess, "spawn").callsFake(() => procStubs);
     });
 
-    // TODO HERE NOW
     it("updates NODE_PATH to .. when run in a normal module", () => {
       base.mockFs({
         "one": {
-          ".lankrc.js": toJs(["one"]),
+          ".lankrc.js": toJs(["one", "two"]),
           "package.json": JSON.stringify({ name: "one" })
+        },
+        "two": {
+          "package.json": JSON.stringify({ name: "two" })
         }
       });
 
       return lank(argv(["exec", "--", "pwd"]))
         .then(() => {
-          expect(childProcess.spawn).to.be.calledOnce;
-          expect(childProcess.spawn.getCall(0).args[2])
+          expect(childProcess.spawn).to.have.callCount(2);
+
+          // one
+          const oneOpts = childProcess.spawn.getCall(0).args[2];
+          expect(oneOpts).to.have.property("cwd", path.resolve(appUtil._cwd()));
+          expect(oneOpts)
             .to.have.property("env")
-              .that.has.property("NODE_PATH")
-                .that.contains(path.resolve("one/.."));
+              .that.has.property("NODE_PATH");
+
+          const oneNP = oneOpts.env.NODE_PATH.split(path.delimiter);
+          expect(oneNP).to.include.members([path.resolve(appUtil._cwd(), "..")]);
+
+          // two
+          const twoOpts = childProcess.spawn.getCall(1).args[2];
+          expect(twoOpts).to.have.property("cwd", path.resolve(appUtil._cwd(), "../two"));
+          expect(twoOpts)
+            .to.have.property("env")
+              .that.has.property("NODE_PATH");
+
+          const twoNP = twoOpts.env.NODE_PATH.split(path.delimiter);
+          expect(twoNP).to.include.members([path.resolve(appUtil._cwd(), "..")]);
         });
     });
 
-    it("TODO: updates NODE_PATH to ../.. when run in a scoped module");
+    it("updates NODE_PATH to ../.. when run in a scoped module", () => {
+      appUtil._cwd.returns(path.resolve("@org/red"));
+
+      base.mockFs({
+        "@org": {
+          "red": {
+            ".lankrc.js": toJs(["@org/red", "@org/blue", "two"]),
+            "package.json": JSON.stringify({ name: "@org/red" })
+          },
+          "blue": {
+            "package.json": JSON.stringify({ name: "@org/blue" })
+          }
+        },
+        "two": {
+          "package.json": JSON.stringify({ name: "two" })
+        }
+      });
+
+      return lank(argv(["exec", "--", "pwd"]))
+        .then(() => {
+          expect(childProcess.spawn).to.have.callCount(3);
+
+          // @org/red
+          const redOpts = childProcess.spawn.getCall(0).args[2];
+          expect(redOpts).to.have.property("cwd", path.resolve(appUtil._cwd()));
+          expect(redOpts)
+            .to.have.property("env")
+              .that.has.property("NODE_PATH");
+
+          const redNP = redOpts.env.NODE_PATH.split(path.delimiter);
+          expect(redNP).to.include.members([path.resolve(appUtil._cwd(), "../..")]);
+
+          // @org/blue
+          const blueOpts = childProcess.spawn.getCall(1).args[2];
+          expect(blueOpts).to.have.property("cwd", path.resolve(appUtil._cwd(), "../../@org/blue"));
+          expect(blueOpts)
+            .to.have.property("env")
+              .that.has.property("NODE_PATH");
+
+          const blueNP = blueOpts.env.NODE_PATH.split(path.delimiter);
+          expect(blueNP).to.include.members([path.resolve(appUtil._cwd(), "../..")]);
+
+          // two
+          const twoOpts = childProcess.spawn.getCall(2).args[2];
+          expect(twoOpts).to.have.property("cwd", path.resolve(appUtil._cwd(), "../../two"));
+          expect(twoOpts)
+            .to.have.property("env")
+              .that.has.property("NODE_PATH");
+
+          const twoNP = twoOpts.env.NODE_PATH.split(path.delimiter);
+          expect(twoNP).to.include.members([path.resolve(appUtil._cwd(), "../..")]);
+        });
+    });
 
     it("TODO: errors if no shell command is given");
     it("TODO: execs a process");
