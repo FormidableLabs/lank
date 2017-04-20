@@ -6,6 +6,8 @@
  *
  * - Mocking filesystem
  */
+const path = require("path");
+const childProcess = require("child_process");
 const program = require("commander");
 
 const lank = require("../../../../bin/lank");
@@ -106,8 +108,38 @@ describe("bin/lank", () => {
   });
 
   describe("exec", () => {
+    let procStubs;
+
+    beforeEach(() => {
+      procStubs = {
+        stdout: { on: base.sandbox.stub() },
+        stderr: { on: base.sandbox.stub() },
+        // Call as `proc.on("close", (code = 0) => {})`
+        on: base.sandbox.stub().callsArgWith(1, 0)
+      };
+
+      base.sandbox.stub(childProcess, "spawn").callsFake(() => procStubs);
+    });
+
     // TODO HERE NOW
-    it("TODO: updates NODE_PATH to .. when run in a normal module");
+    it("updates NODE_PATH to .. when run in a normal module", () => {
+      base.mockFs({
+        "one": {
+          ".lankrc.js": toJs(["one"]),
+          "package.json": JSON.stringify({ name: "one" })
+        }
+      });
+
+      return lank(argv(["exec", "--", "pwd"]))
+        .then(() => {
+          expect(childProcess.spawn).to.be.calledOnce;
+          expect(childProcess.spawn.getCall(0).args[2])
+            .to.have.property("env")
+              .that.has.property("NODE_PATH")
+                .that.contains(path.resolve("one/.."));
+        });
+    });
+
     it("TODO: updates NODE_PATH to ../.. when run in a scoped module");
 
     it("TODO: errors if no shell command is given");
