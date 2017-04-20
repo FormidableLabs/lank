@@ -37,8 +37,10 @@ describe("bin/lank", () => {
 
     it("errors on missing linked directories", () => {
       base.mockFs({
-        ".lankrc.js": toJs(["one", "two"]),
-        "../one": {}
+        "one": {
+          ".lankrc.js": toJs(["one", "two"]),
+          "package.json": JSON.stringify({ name: "one" })
+        }
       });
 
       return lank(argv(["exec", "--", "pwd"]))
@@ -60,8 +62,10 @@ describe("bin/lank", () => {
           one: { tags: ["awesome", "hot"] },
           two: { tags: ["awesome"] }
         }),
-        "../one": {},
-        "../two": {}
+        "one": {
+          "package.json": JSON.stringify({ name: "one" })
+        },
+        "two": {}
       });
 
       return lank(argv());
@@ -99,7 +103,8 @@ describe("bin/lank", () => {
           one: { tags: ["awesome", "hot"] },
           two: { tags: ["awesome"] }
         }),
-        "../one": {
+        "one": {
+          "package.json": JSON.stringify({ name: "one" }),
           "node_modules": {
             "two": {
               "package.json": "{}"
@@ -109,14 +114,14 @@ describe("bin/lank", () => {
             }
           }
         },
-        "../two": {}
+        "two": {}
       });
 
       return lank(argv("link"))
         .then(() => {
           expect(appUtil._stdoutWrite).to.be.calledWithMatch("Found 1 directories");
-          expect(base.fileExists("../one/node_modules/two")).to.be.false;
-          expect(base.fileExists("../one/node_modules/other")).to.be.true;
+          expect(base.fileExists("one/node_modules/two")).to.be.false;
+          expect(base.fileExists("one/node_modules/other")).to.be.true;
         });
     });
 
@@ -127,7 +132,8 @@ describe("bin/lank", () => {
           "@scope/two": { tags: ["awesome"] },
           "three": {}
         }),
-        "../one": {
+        "one": {
+          "package.json": JSON.stringify({ name: "one" }),
           "node_modules": {
             "@scope": {
               "two": {
@@ -147,18 +153,18 @@ describe("bin/lank", () => {
             }
           }
         },
-        "../@scope/two": {},
-        "../three": {}
+        "@scope/two": {},
+        "three": {}
       });
 
       return lank(argv("link"))
         .then(() => {
           expect(appUtil._stdoutWrite).to.be.calledWithMatch("Found 2 directories");
-          expect(base.fileExists("../one/node_modules/@scope/two")).to.be.false;
-          expect(base.fileExists("../one/node_modules/@scope/other")).to.be.true;
-          expect(base.fileExists("../one/node_modules/@scope/other/node_modules/three"))
+          expect(base.fileExists("one/node_modules/@scope/two")).to.be.false;
+          expect(base.fileExists("one/node_modules/@scope/other")).to.be.true;
+          expect(base.fileExists("one/node_modules/@scope/other/node_modules/three"))
             .to.be.false;
-          expect(base.fileExists("../one/node_modules/out-of-scope")).to.be.true;
+          expect(base.fileExists("one/node_modules/out-of-scope")).to.be.true;
         });
     });
 

@@ -54,6 +54,9 @@ beforeEach(() => {
   base.sandbox.stub(util, "_stdoutWrite");
   base.sandbox.stub(util, "_stderrWrite");
 
+  // Assume we're in directory `one` unless otherwise specified.
+  base.sandbox.stub(util, "_cwd").returns(path.resolve("one"));
+
   // Node `4`+ can't `require` from the mocked filesystem, so hackily
   // approximate here.
   base.sandbox.stub(util, "_require").callsFake((mod) => {

@@ -6,7 +6,7 @@ const util = require("../../util");
 const toJs = util.toJs;
 const toJson = util.toJson;
 
-const minimalCfg = [];
+const minimalCfg = ["one"];
 
 describe("lib/config", () => {
 
@@ -88,7 +88,10 @@ describe("lib/config", () => {
 
     it("resolves PWD/lankrc.js", () => {
       base.mockFs({
-        ".lankrc.js": toJs(minimalCfg)
+        "one": {
+          ".lankrc.js": toJs(minimalCfg),
+          "package.json": JSON.stringify({ name: "one" })
+        }
       });
 
       return config.getConfig();
@@ -96,7 +99,10 @@ describe("lib/config", () => {
 
     it("resolves PWD/lankrc.json", () => {
       base.mockFs({
-        ".lankrc.json": toJson(minimalCfg)
+        "one": {
+          ".lankrc.json": toJson(minimalCfg),
+          "package.json": JSON.stringify({ name: "one" })
+        }
       });
 
       return config.getConfig();
@@ -104,7 +110,10 @@ describe("lib/config", () => {
 
     it("resolves ../PWD/lankrc.js", () => {
       base.mockFs({
-        "../.lankrc.js": toJs(minimalCfg)
+        ".lankrc.js": toJs(minimalCfg),
+        "one": {
+          "package.json": JSON.stringify({ name: "one" })
+        }
       });
 
       return config.getConfig();
@@ -112,7 +121,10 @@ describe("lib/config", () => {
 
     it("resolves ../PWD/lankrc.json", () => {
       base.mockFs({
-        "../.lankrc.json": toJson(minimalCfg)
+        ".lankrc.json": toJson(minimalCfg),
+        "one": {
+          "package.json": JSON.stringify({ name: "one" })
+        }
       });
 
       return config.getConfig();
@@ -120,14 +132,16 @@ describe("lib/config", () => {
 
     it("chooses PWD/lankrc.js over ../PWD/lankrc.js", () => {
       base.mockFs({
-        ".lankrc.js": toJs({ pwd: {} }),
-        "../.lankrc.js": toJs({ belowPwd: {} }),
-        "../pwd": {}
+        ".lankrc.js": toJs({ belowPwd: {} }),
+        "one": {
+          ".lankrc.js": toJs(minimalCfg),
+          "package.json": JSON.stringify({ name: "one" })
+        }
       });
 
       return config.getConfig()
         .then((cfg) => {
-          expect(cfg).to.eql([{ module: "pwd", tags: [] }]);
+          expect(cfg).to.eql([{ module: "one", tags: [] }]);
         });
     });
 
@@ -136,8 +150,10 @@ describe("lib/config", () => {
 
     it("errors on missing linked directories", () => {
       base.mockFs({
-        ".lankrc.js": toJs(["one", "two"]),
-        "../one": {}
+        "one": {
+          ".lankrc.js": toJs(["one", "two"]),
+          "package.json": JSON.stringify({ name: "one" })
+        }
       });
 
       return config.getConfig()
@@ -152,8 +168,10 @@ describe("lib/config", () => {
     it("errors on non-directory linked file", () => {
       base.mockFs({
         ".lankrc.js": toJs(["one", "two"]),
-        "../one": {},
-        "../two": "not a directory"
+        "one": {
+          "package.json": JSON.stringify({ name: "one" })
+        },
+        "two": "not a directory"
       });
 
       return config.getConfig()

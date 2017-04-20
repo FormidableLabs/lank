@@ -8,7 +8,7 @@ const getConfig = require("../lib/config").getConfig;
 
 const util = require("../lib/util");
 const getFmt = util.getFmt;
-let fmt = (args) => JSON.stringify(args);
+let fmt = (obj) => getFmt()(obj); // Default if early error.
 
 const ARGS_IDX = 2; // index where cli arguments start
 
