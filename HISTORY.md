@@ -7,6 +7,14 @@ History
 * XXX
 -->
 
+## Unreleased
+
+* Add `lank exec` action.
+* Add `lank link` action.
+* Implement full configuration scheme.
+* Add Travis CI support.
+* Add tests.
+
 ## 0.0.1
 
 * Initial release.
