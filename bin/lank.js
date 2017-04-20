@@ -53,21 +53,19 @@ const main = module.exports = (argv) => {
 
 if (require.main === module) {
   main()
-    /*eslint-disable*/
-    .then((obj) => {
-      console.log(fmt({
-        color: "cyan", key: "main", msg: `TODO DEBUG: ${JSON.stringify(obj)}`
-      }));
+    .then(() => { // eslint-disable-line promise/always-return
+      util._stdoutWrite(`${fmt({
+        color: "cyan", key: "main", msg: "Done."
+      })}\n`);
     })
-    /*eslint-enable*/
     .catch((err) => {
       const cmd = chalk.gray([].concat(
         "lank",
         process.argv.slice(ARGS_IDX)).join(" ")
       );
-      console.log(fmt({ // eslint-disable-line no-console
-        color: "red", key: "main", msg: `Command failed: ${cmd}`
-      }));
+      util._stdoutWrite(`${fmt({
+        color: "red", key: "main", msg: `Command failed: ${cmd}\n`
+      })}\n`);
 
       // Try to get full stack, then full string if not.
       console.error(err.stack || err.toString()); // eslint-disable-line no-console
