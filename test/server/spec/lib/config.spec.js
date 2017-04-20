@@ -145,6 +145,9 @@ describe("lib/config", () => {
         });
     });
 
+    // TODO HERE
+    // TODO IMPLEMENT -- SCOPE DOWN TWO LEVELS
+    // TODO VERIFY NODE_PATH ADJUST
     it("TODO: resolves ../../@SCOPE/PROJ/lankrc.js");
     it("TODO: chooses PWD/lankrc.js over ../../@SCOPE/PROJ/lankrc.js");
 

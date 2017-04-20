@@ -181,6 +181,7 @@ describe("bin/lank", () => {
         });
     });
 
+    it("TODO: removes scoped packages when run from a scoped project");
     it("TODO: removes symlinks");
     it("TODO: finds node_modules/nested/node_modules/foo");
     it("TODO: finds node_modules/nested1/node_modules/nested2/node_modules/foo");
