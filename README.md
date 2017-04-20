@@ -1,3 +1,5 @@
+[![Travis Status][trav_img]][trav_site]
+
 lank
 ====
 
@@ -379,3 +381,6 @@ projects instead of what's installed via `yarn|npm install`.
 
 * TODO(INITIAL): Document - webpack
 * TODO(INITIAL): eslint
+
+[trav_img]: https://api.travis-ci.org/FormidableLabs/lank.svg
+[trav_site]: https://travis-ci.org/FormidableLabs/lank
