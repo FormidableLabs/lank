@@ -52,9 +52,22 @@ describe("bin/lank", () => {
         });
     });
 
-    // TODO HERE
-    // TODO: Then on to scoped `.lankrc.js` resolution.
-    it("TODO: errors if controlling project isn't linked");
+    it("errors if controlling project isn't linked", () => {
+      base.mockFs({
+        "one": {
+          ".lankrc.js": toJs(["two"]),
+          "package.json": JSON.stringify({ name: "one" })
+        }
+      });
+
+      return lank(argv(["exec", "--", "pwd"]))
+        .then(() => {
+          expect("should throw").to.be.false;
+        })
+        .catch((err) => {
+          expect(err).to.have.property("message").that.contains("Controlling project");
+        });
+    });
 
     it("succeeds with valid config and directories", () => {
       base.mockFs({
