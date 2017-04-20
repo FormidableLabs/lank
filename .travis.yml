@@ -14,6 +14,7 @@ branches:
 cache: yarn
 
 install:
+  - npm install -g yarn
   - yarn install
 
 script:
