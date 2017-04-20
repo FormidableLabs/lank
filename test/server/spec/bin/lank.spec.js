@@ -26,6 +26,12 @@ describe("bin/lank", () => {
   describe(".lankrc", () => {
 
     it("errors on missing RC file", () => {
+      base.mockFs({
+        "one": {
+          "package.json": JSON.stringify({ name: "one" })
+        }
+      });
+
       return lank(argv(["exec", "--", "pwd"]))
         .then(() => {
           expect("should throw").to.be.false;
@@ -100,11 +106,13 @@ describe("bin/lank", () => {
   });
 
   describe("exec", () => {
+    // TODO HERE NOW
+    it("TODO: updates NODE_PATH to .. when run in a normal module");
+    it("TODO: updates NODE_PATH to ../.. when run in a scoped module");
+
     it("TODO: errors if no shell command is given");
     it("TODO: execs a process");
     it("TODO: does not spawn a process on dry-run");
-    it("TODO: updates NODE_PATH to .. when run in a normal module");
-    it("TODO: updates NODE_PATH to ../.. when run in a scoped module");
     it("TODO: limits to tags");
     it("TODO: limits to modules");
   });

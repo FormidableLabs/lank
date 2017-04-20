@@ -79,7 +79,27 @@ describe("lib/config", () => {
 
   describe("#getConfig", () => {
 
+    it("errors on missing control package.json", () => {
+      base.mockFs({
+        "one": {}
+      });
+
+      return config.getConfig()
+        .then(() => {
+          expect("should throw").to.be.false;
+        })
+        .catch((err) => {
+          expect(err).to.have.property("message").that.contains("read controlling project");
+        });
+    });
+
     it("errors on missing RC file", () => {
+      base.mockFs({
+        "one": {
+          "package.json": JSON.stringify({ name: "one" })
+        }
+      });
+
       return config.getConfig()
         .then(() => {
           expect("should throw").to.be.false;
@@ -162,13 +182,54 @@ describe("lib/config", () => {
         }
       });
 
-      return config.getConfig();
+      return config.getConfig()
+        .then((cfg) => {
+          expect(cfg).to.eql([{
+            module: "@org/red", tags: [], _lank: { control: true, siblingPath: "../.." }
+          }]);
+        });
     });
 
-    // TODO HERE
-    // TODO IMPLEMENT -- SCOPE DOWN TWO LEVELS
-    // TODO VERIFY NODE_PATH ADJUST
-    it("TODO: chooses @org/red/lankrc.js over lankrc.js");
+    it("resolves lankrc.js for scoped module", () => {
+      appUtil._cwd.returns(path.resolve("@org/red"));
+
+      base.mockFs({
+        ".lankrc.json": toJson(["@org/red"]),
+        "@org": {
+          "red": {
+            "package.json": JSON.stringify({ name: "@org/red" })
+          }
+        }
+      });
+
+      return config.getConfig()
+        .then((cfg) => {
+          expect(cfg).to.eql([{
+            module: "@org/red", tags: [], _lank: { control: true, siblingPath: "../.." }
+          }]);
+        });
+    });
+
+    it("chooses @org/red/lankrc.js over lankrc.js", () => {
+      appUtil._cwd.returns(path.resolve("@org/red"));
+
+      base.mockFs({
+        ".lankrc.js": toJs({ belowPwd: {} }),
+        "@org": {
+          "red": {
+            ".lankrc.json": toJson(["@org/red"]),
+            "package.json": JSON.stringify({ name: "@org/red" })
+          }
+        }
+      });
+
+      return config.getConfig()
+        .then((cfg) => {
+          expect(cfg).to.eql([{
+            module: "@org/red", tags: [], _lank: { control: true, siblingPath: "../.." }
+          }]);
+        });
+    });
 
     it("errors on missing linked directories", () => {
       base.mockFs({
