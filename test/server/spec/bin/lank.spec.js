@@ -9,7 +9,7 @@
 const path = require("path");
 const fs = require("fs-extra");
 const childProcess = require("child_process");
-const program = require("commander");
+const Command = require("commander").Command;
 
 const lank = require("../../../../bin/lank");
 const toJs = require("../../util").toJs;
@@ -23,7 +23,7 @@ const argv = (extra) => ["node", "lank.js"].concat(extra || []);
 describe("bin/lank", () => {
 
   beforeEach(() => {
-    base.sandbox.stub(program, "help");
+    base.sandbox.stub(Command.prototype, "help");
   });
 
   describe(".lankrc", () => {
@@ -210,6 +210,28 @@ describe("bin/lank", () => {
 
           const twoNP = twoOpts.env.NODE_PATH.split(path.delimiter);
           expect(twoNP).to.include.members([path.resolve(appUtil._cwd(), "../..")]);
+        });
+    });
+
+    // TODO HERE -- IMPLEMENT THIS
+    it.skip("allows running actions on projects not including control project", () => {
+      base.mockFs({
+        "one": {
+          ".lankrc.js": toJs(["one", "two"]),
+          "package.json": JSON.stringify({ name: "one" })
+        },
+        "two": {
+          "package.json": JSON.stringify({ name: "two" })
+        }
+      });
+
+      return lank(argv(["exec", "-m", "two", "--", "pwd"]))
+        .then(() => {
+          expect(childProcess.spawn).to.have.callCount(1);
+
+          // two
+          const twoOpts = childProcess.spawn.getCall(0).args[2];
+          expect(twoOpts).to.have.property("cwd", path.resolve(appUtil._cwd(), "../two"));
         });
     });
 
