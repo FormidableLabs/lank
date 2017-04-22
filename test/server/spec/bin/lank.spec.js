@@ -7,6 +7,7 @@
  * - Mocking filesystem
  */
 const path = require("path");
+const fs = require("fs-extra");
 const childProcess = require("child_process");
 const program = require("commander");
 
@@ -339,7 +340,30 @@ describe("bin/lank", () => {
         });
     });
 
-    it("TODO: removes symlinks");
+    it("removes symlinks", () => {
+      base.mockFs({
+        ".lankrc.js": toJs({
+          one: { tags: ["awesome", "hot"] },
+          two: { tags: ["awesome"] }
+        }),
+        "one": {
+          "package.json": JSON.stringify({ name: "one" }),
+          "node_modules": {}
+        },
+        "two": {}
+      });
+
+      fs.symlinkSync("two", "one/node_modules/two");
+      expect(fs.lstatSync("one/node_modules/two").isSymbolicLink()).to.be.true;
+
+      return lank(argv("link"))
+        .then(() => {
+          expect(appUtil._stdoutWrite).to.be.calledWithMatch("Found 1 directories");
+          expect(() => fs.lstatSync("one/node_modules/two").isSymbolicLink()).to.throw("ENOENT");
+          expect(base.fileExists("one/node_modules/two")).to.be.false;
+        });
+    });
+
     it("TODO: finds node_modules/nested/node_modules/foo");
     it("TODO: finds node_modules/nested1/node_modules/nested2/node_modules/foo");
     it("TODO: does not delete files on dry-run");
