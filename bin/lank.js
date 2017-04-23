@@ -25,14 +25,16 @@ const main = module.exports = (argv) => {
     // Stash config, run action.
     .then((rawCfg) => {
       // Process and stash configs + formatter.
-      cfg = (rawCfg || [])
-        // Filter to tags.
-        .filter((obj) => !tags.length || obj.tags.some((tag) => tags.indexOf(tag) > -1))
-        // Filter to modules.
-        .filter((obj) => !mods.length || mods.indexOf(obj.module) > -1);
+      cfg = Object.assign({}, rawCfg, {
+        projs: (rawCfg.projs || [])
+          // Filter to tags.
+          .filter((obj) => !tags.length || obj.tags.some((tag) => tags.indexOf(tag) > -1))
+          // Filter to modules.
+          .filter((obj) => !mods.length || mods.indexOf(obj.module) > -1)
+      });
 
       fmt = getFmt(cfg);
-      if (!cfg.length) {
+      if (!cfg.projs.length) {
         const tagsMsg = `Tags: '${tags.join("', '")}'.`;
         const modsMsg = `Modules: '${mods.join("', '")}'.`;
         throw new Error(`Found no matching projects. ${tagsMsg} ${modsMsg}`);

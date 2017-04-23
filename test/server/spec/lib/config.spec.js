@@ -13,8 +13,8 @@ const minimalCfg = ["one"];
 
 describe("lib/config", () => {
 
-  describe("#_normalizeConfig", () => {
-    const norm = config._normalizeConfig;
+  describe("#_normalizeProjects", () => {
+    const norm = config._normalizeProjects;
 
     it("handles empty cases", () => {
       expect(norm()).to.eql([]);
@@ -164,9 +164,15 @@ describe("lib/config", () => {
 
       return config.getConfig()
         .then((cfg) => {
-          expect(cfg).to.eql([{
-            module: "one", tags: [], _lank: { control: true, siblingPath: ".." }
-          }]);
+          expect(cfg).to.eql({
+            control: {
+              module: "one",
+              siblingPath: ".."
+            },
+            projs: [{
+              module: "one", tags: []
+            }]
+          });
         });
     });
 
@@ -184,9 +190,15 @@ describe("lib/config", () => {
 
       return config.getConfig()
         .then((cfg) => {
-          expect(cfg).to.eql([{
-            module: "@org/red", tags: [], _lank: { control: true, siblingPath: "../.." }
-          }]);
+          expect(cfg).to.eql({
+            control: {
+              module: "@org/red",
+              siblingPath: "../.."
+            },
+            projs: [{
+              module: "@org/red", tags: []
+            }]
+          });
         });
     });
 
@@ -204,9 +216,15 @@ describe("lib/config", () => {
 
       return config.getConfig()
         .then((cfg) => {
-          expect(cfg).to.eql([{
-            module: "@org/red", tags: [], _lank: { control: true, siblingPath: "../.." }
-          }]);
+          expect(cfg).to.eql({
+            control: {
+              module: "@org/red",
+              siblingPath: "../.."
+            },
+            projs: [{
+              module: "@org/red", tags: []
+            }]
+          });
         });
     });
 
@@ -225,9 +243,15 @@ describe("lib/config", () => {
 
       return config.getConfig()
         .then((cfg) => {
-          expect(cfg).to.eql([{
-            module: "@org/red", tags: [], _lank: { control: true, siblingPath: "../.." }
-          }]);
+          expect(cfg).to.eql({
+            control: {
+              module: "@org/red",
+              siblingPath: "../.."
+            },
+            projs: [{
+              module: "@org/red", tags: []
+            }]
+          });
         });
     });
 

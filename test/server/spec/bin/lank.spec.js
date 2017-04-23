@@ -213,8 +213,7 @@ describe("bin/lank", () => {
         });
     });
 
-    // TODO HERE -- IMPLEMENT THIS
-    it.skip("allows running actions on projects not including control project", () => {
+    it("allows running actions on projects not including control project", () => {
       base.mockFs({
         "one": {
           ".lankrc.js": toJs(["one", "two"]),
