@@ -7,7 +7,7 @@ History
 * XXX
 -->
 
-## Unreleased
+## 0.1.0
 
 * Add `lank exec` action.
 * Add `lank link` action.
