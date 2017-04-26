@@ -336,6 +336,26 @@ indicate which project the output came from. For example:
 $ lank exec -u -- npm run watch-files
 ```
 
+### Keeping Package Dependencies in Sync
+
+Multiple repositories generally ends up with dependency skews across projects.
+`lank` provides a very convenient manner of harmonizing dependencies across all
+linked projects with:
+
+```sh
+$ lank deps -d  # Check with a dry run first.
+$ lank deps
+```
+
+`lank` uses a simplistic algorithm of:
+
+1. Only looking at deps that are of the forms `1.2.3`, `~1.2.3`, and `^1.2.3`
+2. If 2+ different versions exist in a `package.json`, `lank` chooses the latest
+   or highest version string to win.
+
+`lank` then writes out updates to actual project `package.json` files where
+applicable.
+
 ## Notes, Tips, and Tricks
 
 ### Miscellaneous
