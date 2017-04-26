@@ -392,4 +392,12 @@ describe("bin/lank", () => {
     it("TODO: limits to modules");
   });
 
+  describe("deps", () => {
+    it("TODO: handles empty package.json files");
+    it("TODO: leaves unchanged deps unchanged");
+    it("TODO: updates deps");
+    it("TODO: updates deps with mixed ~^ and nothing");
+    it("TODO: updates devDeps");
+  });
+
 });
