@@ -393,7 +393,52 @@ describe("bin/lank", () => {
   });
 
   describe("deps", () => {
-    it("TODO: handles empty package.json files");
+    let pkgOne;
+    let pkgTwo;
+    let getFs;
+
+    beforeEach(() => {
+      pkgOne = {
+        name: "one",
+        dependencies: {},
+        devDependencies: {}
+      };
+      pkgTwo = {
+        name: "two",
+        dependencies: {},
+        devDependencies: {}
+      };
+
+      getFs = () => ({
+        ".lankrc.js": toJs({
+          one: { tags: ["awesome", "hot"] },
+          two: { tags: ["awesome"] }
+        }),
+        "one": {
+          "package.json": JSON.stringify(pkgOne),
+          "node_modules": {}
+        },
+        "two": {
+          "package.json": JSON.stringify(pkgTwo)
+        }
+      });
+    });
+
+    it("handles empty package.json files", () => {
+      pkgOne = {
+        name: "one"
+      };
+
+      base.mockFs(getFs());
+
+      return lank(argv("deps"))
+        .then(() => {
+          expect(appUtil._stdoutWrite).to.be.calledWithMatch("Found 0 dependencies");
+          expect(base.fileJson("one/package.json")).to.eql(pkgOne);
+          expect(base.fileJson("two/package.json")).to.eql(pkgTwo);
+        });
+    });
+
     it("TODO: leaves unchanged deps unchanged");
     it("TODO: updates deps");
     it("TODO: updates deps with mixed ~^ and nothing");
