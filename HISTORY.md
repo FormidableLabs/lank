@@ -7,7 +7,7 @@ History
 * XXX
 -->
 
-## Unreleased
+## 0.2.0
 
 * Add `-q` flag.
 * Add `lank deps` action.
