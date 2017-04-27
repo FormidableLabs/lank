@@ -439,10 +439,115 @@ describe("bin/lank", () => {
         });
     });
 
-    it("TODO: leaves unchanged deps unchanged");
-    it("TODO: updates deps");
-    it("TODO: updates deps with mixed ~^ and nothing");
-    it("TODO: updates devDeps");
+    it("doesn't change identical / non-reconcilable deps", () => {
+      pkgOne = Object.assign(pkgOne, {
+        dependencies: {
+          "identical": "1.2.3",
+          "unmatchable": "<=1.0 || >=4"
+        }
+      });
+
+      pkgTwo = Object.assign(pkgTwo, {
+        dependencies: {
+          "identical": "1.2.3",
+          "unmatchable": "4.2.0"
+        }
+      });
+
+      base.mockFs(getFs());
+
+      return lank(argv("deps"))
+        .then(() => {
+          expect(appUtil._stdoutWrite).to.be.calledWithMatch("Found 0 dependencies");
+          expect(base.fileJson("one/package.json")).to.eql(pkgOne);
+          expect(base.fileJson("two/package.json")).to.eql(pkgTwo);
+        });
+    });
+
+    it("updates deps", () => {
+      pkgOne = Object.assign(pkgOne, {
+        dependencies: {
+          "identical": "1.2.3",
+          "pinned": "1.0.0",
+          "caret": "^2.3.4", // wins
+          "tilde": "~1.5.6", // wins
+          "mixed": "~4.5.6",
+          "mixed-skewed": "^7.0.0"
+        }
+      });
+
+      pkgTwo = Object.assign(pkgTwo, {
+        dependencies: {
+          "identical": "1.2.3",
+          "pinned": "1.2.0", // wins
+          "caret": "2.3.4",
+          "tilde": "1.5.6",
+          "mixed": "^4.5.6", // wins
+          "mixed-skewed": "~8.0.0" // wins
+        }
+      });
+
+      base.mockFs(getFs());
+
+      return lank(argv("deps"))
+        .then(() => {
+          expect(appUtil._stdoutWrite).to.be.calledWithMatch("Found 5 dependencies");
+
+          Object.assign(pkgOne.dependencies, {
+            "pinned": "1.2.0",
+            "mixed": "^4.5.6",
+            "mixed-skewed": "~8.0.0"
+          });
+          expect(base.fileJson("one/package.json")).to.eql(pkgOne);
+
+          Object.assign(pkgTwo.dependencies, {
+            "caret": "^2.3.4",
+            "tilde": "~1.5.6"
+          });
+          expect(base.fileJson("two/package.json")).to.eql(pkgTwo);
+        });
+    });
+
+    it("updates devDeps", () => {
+      pkgOne = Object.assign(pkgOne, {
+        dependencies: {
+          "identical": "1.2.3",
+          "all": "2.3.4"
+        },
+        devDependencies: {
+          "across": "^1.3.6",
+          "all": "3.4.5"
+        }
+      });
+
+      pkgTwo = Object.assign(pkgTwo, {
+        dependencies: {
+          "identical": "1.2.3",
+          "across": "^1.3.5",
+          "all": "8.9.10"
+        }
+      });
+
+      base.mockFs(getFs());
+
+      return lank(argv("deps"))
+        .then(() => {
+          expect(appUtil._stdoutWrite).to.be.calledWithMatch("Found 2 dependencies");
+
+          Object.assign(pkgOne.dependencies, {
+            "all": "8.9.10"
+          });
+          Object.assign(pkgOne.devDependencies, {
+            "all": "8.9.10"
+          });
+          expect(base.fileJson("one/package.json")).to.eql(pkgOne);
+
+          Object.assign(pkgTwo.dependencies, {
+            "across": "^1.3.6"
+          });
+          expect(base.fileJson("two/package.json")).to.eql(pkgTwo);
+        });
+    });
   });
 
 });
