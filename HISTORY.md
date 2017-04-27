@@ -9,6 +9,7 @@ History
 
 ## Unreleased
 
+* Add `-q` flag.
 * Add `lank deps` action.
 
 ## 0.1.0
