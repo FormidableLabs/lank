@@ -27,6 +27,7 @@ const base = module.exports = {
   // File stuff
   // NOTE: Sync methods are OK here because mocked and in-memory.
   fileRead: (filePath, encoding) => fs.readFileSync(filePath).toString(encoding),
+  fileJson: (filePath) => fs.readJsonSync(filePath),
   fileExists: (filePath) => fs.existsSync(filePath)
 };
 
