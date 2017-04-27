@@ -7,6 +7,10 @@ History
 * XXX
 -->
 
+## Unreleased
+
+* Add `lank deps` action.
+
 ## 0.1.0
 
 * Add `lank exec` action.
