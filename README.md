@@ -356,6 +356,21 @@ $ lank deps
 `lank` then writes out updates to actual project `package.json` files where
 applicable.
 
+For a usual workflow, you'll want to update deps in linked projects, re-install
+dependencies (and new ones), then re-link the projects. Something like:
+
+```sh
+# Update
+$ lank deps
+
+# Reinstall
+$ lank exec -s -- yarn install --force
+$ lank exec -s -- npm install
+
+# Re-link
+$ lank link
+```
+
 ## Notes, Tips, and Tricks
 
 ### Miscellaneous
