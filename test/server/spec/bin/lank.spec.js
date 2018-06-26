@@ -19,18 +19,17 @@ const base = require("../base.spec");
 
 // Helper argv arrays.
 const argv = (extra) => ["node", "lank.js"].concat(extra || []);
+const NM = "node_modules";
 
 describe("bin/lank", () => {
-
   beforeEach(() => {
     base.sandbox.stub(Command.prototype, "help");
   });
 
   describe(".lankrc", () => {
-
     it("errors on missing RC file", () => {
       base.mockFs({
-        "one": {
+        one: {
           "package.json": JSON.stringify({ name: "one" })
         }
       });
@@ -46,7 +45,7 @@ describe("bin/lank", () => {
 
     it("errors on missing linked directories", () => {
       base.mockFs({
-        "one": {
+        one: {
           ".lankrc.js": toJs(["one", "two"]),
           "package.json": JSON.stringify({ name: "one" })
         }
@@ -63,7 +62,7 @@ describe("bin/lank", () => {
 
     it("errors if controlling project isn't linked", () => {
       base.mockFs({
-        "one": {
+        one: {
           ".lankrc.js": toJs(["two"]),
           "package.json": JSON.stringify({ name: "one" })
         }
@@ -84,10 +83,10 @@ describe("bin/lank", () => {
           one: { tags: ["awesome", "hot"] },
           two: { tags: ["awesome"] }
         }),
-        "one": {
+        one: {
           "package.json": JSON.stringify({ name: "one" })
         },
-        "two": {}
+        two: {}
       });
 
       return lank(argv());
@@ -124,11 +123,11 @@ describe("bin/lank", () => {
 
     it("updates NODE_PATH to .. when run in a normal module", () => {
       base.mockFs({
-        "one": {
+        one: {
           ".lankrc.js": toJs(["one", "two"]),
           "package.json": JSON.stringify({ name: "one" })
         },
-        "two": {
+        two: {
           "package.json": JSON.stringify({ name: "two" })
         }
       });
@@ -142,7 +141,7 @@ describe("bin/lank", () => {
           expect(oneOpts).to.have.property("cwd", path.resolve(appUtil._cwd()));
           expect(oneOpts)
             .to.have.property("env")
-              .that.has.property("NODE_PATH");
+            .that.has.property("NODE_PATH");
 
           const oneNP = oneOpts.env.NODE_PATH.split(path.delimiter);
           expect(oneNP).to.include.members([path.resolve(appUtil._cwd(), "..")]);
@@ -152,7 +151,7 @@ describe("bin/lank", () => {
           expect(twoOpts).to.have.property("cwd", path.resolve(appUtil._cwd(), "../two"));
           expect(twoOpts)
             .to.have.property("env")
-              .that.has.property("NODE_PATH");
+            .that.has.property("NODE_PATH");
 
           const twoNP = twoOpts.env.NODE_PATH.split(path.delimiter);
           expect(twoNP).to.include.members([path.resolve(appUtil._cwd(), "..")]);
@@ -164,15 +163,15 @@ describe("bin/lank", () => {
 
       base.mockFs({
         "@org": {
-          "red": {
+          red: {
             ".lankrc.js": toJs(["@org/red", "@org/blue", "two"]),
             "package.json": JSON.stringify({ name: "@org/red" })
           },
-          "blue": {
+          blue: {
             "package.json": JSON.stringify({ name: "@org/blue" })
           }
         },
-        "two": {
+        two: {
           "package.json": JSON.stringify({ name: "two" })
         }
       });
@@ -186,7 +185,7 @@ describe("bin/lank", () => {
           expect(redOpts).to.have.property("cwd", path.resolve(appUtil._cwd()));
           expect(redOpts)
             .to.have.property("env")
-              .that.has.property("NODE_PATH");
+            .that.has.property("NODE_PATH");
 
           const redNP = redOpts.env.NODE_PATH.split(path.delimiter);
           expect(redNP).to.include.members([path.resolve(appUtil._cwd(), "../..")]);
@@ -196,7 +195,7 @@ describe("bin/lank", () => {
           expect(blueOpts).to.have.property("cwd", path.resolve(appUtil._cwd(), "../../@org/blue"));
           expect(blueOpts)
             .to.have.property("env")
-              .that.has.property("NODE_PATH");
+            .that.has.property("NODE_PATH");
 
           const blueNP = blueOpts.env.NODE_PATH.split(path.delimiter);
           expect(blueNP).to.include.members([path.resolve(appUtil._cwd(), "../..")]);
@@ -206,7 +205,7 @@ describe("bin/lank", () => {
           expect(twoOpts).to.have.property("cwd", path.resolve(appUtil._cwd(), "../../two"));
           expect(twoOpts)
             .to.have.property("env")
-              .that.has.property("NODE_PATH");
+            .that.has.property("NODE_PATH");
 
           const twoNP = twoOpts.env.NODE_PATH.split(path.delimiter);
           expect(twoNP).to.include.members([path.resolve(appUtil._cwd(), "../..")]);
@@ -215,11 +214,11 @@ describe("bin/lank", () => {
 
     it("allows running actions on projects not including control project", () => {
       base.mockFs({
-        "one": {
+        one: {
           ".lankrc.js": toJs(["one", "two"]),
           "package.json": JSON.stringify({ name: "one" })
         },
-        "two": {
+        two: {
           "package.json": JSON.stringify({ name: "two" })
         }
       });
@@ -248,18 +247,18 @@ describe("bin/lank", () => {
           one: { tags: ["awesome", "hot"] },
           two: { tags: ["awesome"] }
         }),
-        "one": {
+        one: {
           "package.json": JSON.stringify({ name: "one" }),
-          "node_modules": {
-            "two": {
+          [NM]: {
+            two: {
               "package.json": "{}"
             },
-            "other": {
+            other: {
               "package.json": "{}"
             }
           }
         },
-        "two": {}
+        two: {}
       });
 
       return lank(argv("link"))
@@ -273,21 +272,21 @@ describe("bin/lank", () => {
     it("removes scoped packages", () => {
       base.mockFs({
         ".lankrc.js": toJs({
-          "one": { tags: ["awesome", "hot"] },
+          one: { tags: ["awesome", "hot"] },
           "@scope/two": { tags: ["awesome"] },
-          "three": {}
+          three: {}
         }),
-        "one": {
+        one: {
           "package.json": JSON.stringify({ name: "one" }),
-          "node_modules": {
+          [NM]: {
             "@scope": {
-              "two": {
+              two: {
                 "package.json": "{}"
               },
-              "other": {
+              other: {
                 "package.json": "{}",
-                "node_modules": {
-                  "three": {
+                [NM]: {
+                  three: {
                     "package.json": "{}"
                   }
                 }
@@ -299,7 +298,7 @@ describe("bin/lank", () => {
           }
         },
         "@scope/two": {},
-        "three": {}
+        three: {}
       });
 
       return lank(argv("link"))
@@ -318,20 +317,20 @@ describe("bin/lank", () => {
 
       base.mockFs({
         ".lankrc.js": toJs({
-          "one": { tags: ["awesome", "hot"] },
+          one: { tags: ["awesome", "hot"] },
           "@scope/two": { tags: ["awesome"] },
-          "three": {}
+          three: {}
         }),
-        "one": {
-          "node_modules": {
+        one: {
+          [NM]: {
             "@scope": {
-              "two": {
+              two: {
                 "package.json": "{}"
               },
-              "other": {
+              other: {
                 "package.json": "{}",
-                "node_modules": {
-                  "three": {
+                [NM]: {
+                  three: {
                     "package.json": "{}"
                   }
                 }
@@ -343,11 +342,11 @@ describe("bin/lank", () => {
           }
         },
         "@scope": {
-          "two": {
+          two: {
             "package.json": JSON.stringify({ name: "@scope/two" })
           }
         },
-        "three": {}
+        three: {}
       });
 
       return lank(argv("link"))
@@ -367,11 +366,11 @@ describe("bin/lank", () => {
           one: { tags: ["awesome", "hot"] },
           two: { tags: ["awesome"] }
         }),
-        "one": {
+        one: {
           "package.json": JSON.stringify({ name: "one" }),
-          "node_modules": {}
+          [NM]: {}
         },
-        "two": {}
+        two: {}
       });
 
       fs.symlinkSync("two", "one/node_modules/two");
@@ -414,11 +413,11 @@ describe("bin/lank", () => {
           one: { tags: ["awesome", "hot"] },
           two: { tags: ["awesome"] }
         }),
-        "one": {
+        one: {
           "package.json": JSON.stringify(pkgOne),
-          "node_modules": {}
+          [NM]: {}
         },
-        "two": {
+        two: {
           "package.json": JSON.stringify(pkgTwo)
         }
       });
@@ -442,15 +441,15 @@ describe("bin/lank", () => {
     it("doesn't change identical / non-reconcilable deps", () => {
       pkgOne = Object.assign(pkgOne, {
         dependencies: {
-          "identical": "1.2.3",
-          "unmatchable": "<=1.0 || >=4"
+          identical: "1.2.3",
+          unmatchable: "<=1.0 || >=4"
         }
       });
 
       pkgTwo = Object.assign(pkgTwo, {
         dependencies: {
-          "identical": "1.2.3",
-          "unmatchable": "4.2.0"
+          identical: "1.2.3",
+          unmatchable: "4.2.0"
         }
       });
 
@@ -467,22 +466,22 @@ describe("bin/lank", () => {
     it("updates deps", () => {
       pkgOne = Object.assign(pkgOne, {
         dependencies: {
-          "identical": "1.2.3",
-          "pinned": "1.0.0",
-          "caret": "^2.3.4", // wins
-          "tilde": "~1.5.6", // wins
-          "mixed": "~4.5.6",
+          identical: "1.2.3",
+          pinned: "1.0.0",
+          caret: "^2.3.4", // wins
+          tilde: "~1.5.6", // wins
+          mixed: "~4.5.6",
           "mixed-skewed": "^7.0.0"
         }
       });
 
       pkgTwo = Object.assign(pkgTwo, {
         dependencies: {
-          "identical": "1.2.3",
-          "pinned": "1.2.0", // wins
-          "caret": "2.3.4",
-          "tilde": "1.5.6",
-          "mixed": "^4.5.6", // wins
+          identical: "1.2.3",
+          pinned: "1.2.0", // wins
+          caret: "2.3.4",
+          tilde: "1.5.6",
+          mixed: "^4.5.6", // wins
           "mixed-skewed": "~8.0.0" // wins
         }
       });
@@ -494,15 +493,15 @@ describe("bin/lank", () => {
           expect(appUtil._stdoutWrite).to.be.calledWithMatch("Found 5 dependencies");
 
           Object.assign(pkgOne.dependencies, {
-            "pinned": "1.2.0",
-            "mixed": "^4.5.6",
+            pinned: "1.2.0",
+            mixed: "^4.5.6",
             "mixed-skewed": "~8.0.0"
           });
           expect(base.fileJson("one/package.json")).to.eql(pkgOne);
 
           Object.assign(pkgTwo.dependencies, {
-            "caret": "^2.3.4",
-            "tilde": "~1.5.6"
+            caret: "^2.3.4",
+            tilde: "~1.5.6"
           });
           expect(base.fileJson("two/package.json")).to.eql(pkgTwo);
         });
@@ -511,20 +510,20 @@ describe("bin/lank", () => {
     it("updates devDeps", () => {
       pkgOne = Object.assign(pkgOne, {
         dependencies: {
-          "identical": "1.2.3",
-          "all": "2.3.4"
+          identical: "1.2.3",
+          all: "2.3.4"
         },
         devDependencies: {
-          "across": "^1.3.6",
-          "all": "3.4.5"
+          across: "^1.3.6",
+          all: "3.4.5"
         }
       });
 
       pkgTwo = Object.assign(pkgTwo, {
         dependencies: {
-          "identical": "1.2.3",
-          "across": "^1.3.5",
-          "all": "8.9.10"
+          identical: "1.2.3",
+          across: "^1.3.5",
+          all: "8.9.10"
         }
       });
 
@@ -535,19 +534,18 @@ describe("bin/lank", () => {
           expect(appUtil._stdoutWrite).to.be.calledWithMatch("Found 2 dependencies");
 
           Object.assign(pkgOne.dependencies, {
-            "all": "8.9.10"
+            all: "8.9.10"
           });
           Object.assign(pkgOne.devDependencies, {
-            "all": "8.9.10"
+            all: "8.9.10"
           });
           expect(base.fileJson("one/package.json")).to.eql(pkgOne);
 
           Object.assign(pkgTwo.dependencies, {
-            "across": "^1.3.6"
+            across: "^1.3.6"
           });
           expect(base.fileJson("two/package.json")).to.eql(pkgTwo);
         });
     });
   });
-
 });

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 "use strict";
 
 const chalk = require("chalk");
@@ -49,7 +50,8 @@ const main = module.exports = (argv) => {
     // Ensure we've closed listeners, then return config, args.
     .then(() => {
       argsMod.close();
-      return { cfg, args };
+      return { cfg,
+        args };
     })
     .catch((err) => {
       argsMod.close();
@@ -61,7 +63,9 @@ if (require.main === module) {
   main()
     .then(() => { // eslint-disable-line promise/always-return
       write({
-        color: "cyan", key: "main", msg: "Done."
+        color: "cyan",
+        key: "main",
+        msg: "Done."
       });
     })
     .catch((err) => {
@@ -70,7 +74,9 @@ if (require.main === module) {
         process.argv.slice(ARGS_IDX)).join(" ")
       );
       write({
-        color: "red", key: "main", msg: `Command failed: ${cmd}\n`
+        color: "red",
+        key: "main",
+        msg: `Command failed: ${cmd}\n`
       });
 
       // Try to get full stack, then full string if not.
