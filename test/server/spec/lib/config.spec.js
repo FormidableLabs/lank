@@ -12,7 +12,6 @@ const appUtil = require("../../../../lib/util");
 const minimalCfg = ["one"];
 
 describe("lib/config", () => {
-
   describe("#_normalizeProjects", () => {
     const norm = config._normalizeProjects;
 
@@ -24,64 +23,85 @@ describe("lib/config", () => {
     });
 
     it("converts strings to config object", () => {
-      expect(norm(["one"])) .to.eql([
-        { module: "one", tags: [] }
+      expect(norm(["one"])).to.eql([
+        { module: "one",
+          tags: [] }
       ]);
-      expect(norm(["one", "two"])) .to.eql([
-        { module: "one", tags: [] },
-        { module: "two", tags: [] }
+      expect(norm(["one", "two"])).to.eql([
+        { module: "one",
+          tags: [] },
+        { module: "two",
+          tags: [] }
       ]);
-      expect(norm(["one", "two", "three"])) .to.eql([
-        { module: "one", tags: [] },
-        { module: "two", tags: [] },
-        { module: "three", tags: [] }
+      expect(norm(["one", "two", "three"])).to.eql([
+        { module: "one",
+          tags: [] },
+        { module: "two",
+          tags: [] },
+        { module: "three",
+          tags: [] }
       ]);
     });
 
     it("converts object shorthand to config object", () => {
-      expect(norm({ one: {} })) .to.eql([
-        { module: "one", tags: [] }
+      expect(norm({ one: {} })).to.eql([
+        { module: "one",
+          tags: [] }
       ]);
-      expect(norm({ one: {}, two: { tags: ["foo"] } })) .to.eql([
-        { module: "one", tags: [] },
-        { module: "two", tags: ["foo"] }
+      expect(norm({ one: {},
+        two: { tags: ["foo"] } })).to.eql([
+        { module: "one",
+          tags: [] },
+        { module: "two",
+          tags: ["foo"] }
       ]);
       expect(norm({
         one: {},
         two: { tags: "foo" },
         three: { tags: ["foo", "bar"] }
       })).to.eql([
-        { module: "one", tags: [] },
-        { module: "two", tags: ["foo"] },
-        { module: "three", tags: ["foo", "bar"] }
+        { module: "one",
+          tags: [] },
+        { module: "two",
+          tags: ["foo"] },
+        { module: "three",
+          tags: ["foo", "bar"] }
       ]);
     });
 
     it("converts array of objects to config object", () => {
-      expect(norm([{ module: "one" }])) .to.eql([
-        { module: "one", tags: [] }
+      expect(norm([{ module: "one" }])).to.eql([
+        { module: "one",
+          tags: [] }
       ]);
-      expect(norm([{ module: "one" }, { module: "two", tags: ["foo"] }])) .to.eql([
-        { module: "one", tags: [] },
-        { module: "two", tags: ["foo"] }
+      expect(norm([{ module: "one" }, { module: "two",
+        tags: ["foo"] }])).to.eql([
+        { module: "one",
+          tags: [] },
+        { module: "two",
+          tags: ["foo"] }
       ]);
       expect(norm([
         { module: "one" },
-        { module: "two", tags: ["foo"] },
-        { module: "three", tags: ["foo", "bar"] }
+        { module: "two",
+          tags: ["foo"] },
+        { module: "three",
+          tags: ["foo", "bar"] }
       ])).to.eql([
-        { module: "one", tags: [] },
-        { module: "two", tags: ["foo"] },
-        { module: "three", tags: ["foo", "bar"] }
+        { module: "one",
+          tags: [] },
+        { module: "two",
+          tags: ["foo"] },
+        { module: "three",
+          tags: ["foo", "bar"] }
       ]);
     });
   });
 
   describe("#getConfig", () => {
-
     it("errors on missing control package.json", () => {
       base.mockFs({
-        "one": {}
+        one: {}
       });
 
       return config.getConfig()
@@ -95,7 +115,7 @@ describe("lib/config", () => {
 
     it("errors on missing RC file", () => {
       base.mockFs({
-        "one": {
+        one: {
           "package.json": JSON.stringify({ name: "one" })
         }
       });
@@ -111,7 +131,7 @@ describe("lib/config", () => {
 
     it("resolves PWD/lankrc.js", () => {
       base.mockFs({
-        "one": {
+        one: {
           ".lankrc.js": toJs(minimalCfg),
           "package.json": JSON.stringify({ name: "one" })
         }
@@ -122,7 +142,7 @@ describe("lib/config", () => {
 
     it("resolves PWD/lankrc.json", () => {
       base.mockFs({
-        "one": {
+        one: {
           ".lankrc.json": toJson(minimalCfg),
           "package.json": JSON.stringify({ name: "one" })
         }
@@ -134,7 +154,7 @@ describe("lib/config", () => {
     it("resolves lankrc.js", () => {
       base.mockFs({
         ".lankrc.js": toJs(minimalCfg),
-        "one": {
+        one: {
           "package.json": JSON.stringify({ name: "one" })
         }
       });
@@ -145,7 +165,7 @@ describe("lib/config", () => {
     it("resolves one/lankrc.json", () => {
       base.mockFs({
         ".lankrc.json": toJson(minimalCfg),
-        "one": {
+        one: {
           "package.json": JSON.stringify({ name: "one" })
         }
       });
@@ -156,7 +176,7 @@ describe("lib/config", () => {
     it("chooses one/lankrc.js over lankrc.js", () => {
       base.mockFs({
         ".lankrc.js": toJs({ belowPwd: {} }),
-        "one": {
+        one: {
           ".lankrc.js": toJs(minimalCfg),
           "package.json": JSON.stringify({ name: "one" })
         }
@@ -170,7 +190,8 @@ describe("lib/config", () => {
               siblingPath: ".."
             },
             projs: [{
-              module: "one", tags: []
+              module: "one",
+              tags: []
             }]
           });
         });
@@ -181,7 +202,7 @@ describe("lib/config", () => {
 
       base.mockFs({
         "@org": {
-          "red": {
+          red: {
             ".lankrc.json": toJson(["@org/red"]),
             "package.json": JSON.stringify({ name: "@org/red" })
           }
@@ -196,7 +217,8 @@ describe("lib/config", () => {
               siblingPath: "../.."
             },
             projs: [{
-              module: "@org/red", tags: []
+              module: "@org/red",
+              tags: []
             }]
           });
         });
@@ -208,7 +230,7 @@ describe("lib/config", () => {
       base.mockFs({
         ".lankrc.json": toJson(["@org/red"]),
         "@org": {
-          "red": {
+          red: {
             "package.json": JSON.stringify({ name: "@org/red" })
           }
         }
@@ -222,7 +244,8 @@ describe("lib/config", () => {
               siblingPath: "../.."
             },
             projs: [{
-              module: "@org/red", tags: []
+              module: "@org/red",
+              tags: []
             }]
           });
         });
@@ -234,7 +257,7 @@ describe("lib/config", () => {
       base.mockFs({
         ".lankrc.js": toJs({ belowPwd: {} }),
         "@org": {
-          "red": {
+          red: {
             ".lankrc.json": toJson(["@org/red"]),
             "package.json": JSON.stringify({ name: "@org/red" })
           }
@@ -249,7 +272,8 @@ describe("lib/config", () => {
               siblingPath: "../.."
             },
             projs: [{
-              module: "@org/red", tags: []
+              module: "@org/red",
+              tags: []
             }]
           });
         });
@@ -257,7 +281,7 @@ describe("lib/config", () => {
 
     it("errors on missing linked directories", () => {
       base.mockFs({
-        "one": {
+        one: {
           ".lankrc.js": toJs(["one", "two"]),
           "package.json": JSON.stringify({ name: "one" })
         }
@@ -275,10 +299,10 @@ describe("lib/config", () => {
     it("errors on non-directory linked file", () => {
       base.mockFs({
         ".lankrc.js": toJs(["one", "two"]),
-        "one": {
+        one: {
           "package.json": JSON.stringify({ name: "one" })
         },
-        "two": "not a directory"
+        two: "not a directory"
       });
 
       return config.getConfig()
@@ -289,7 +313,5 @@ describe("lib/config", () => {
           expect(err).to.have.property("message").that.contains("not a directory");
         });
     });
-
   });
-
 });

@@ -47,7 +47,7 @@ beforeEach(() => {
   base.mockFs();
 
   // Set up sandbox.
-  base.sandbox = sinon.sandbox.create({
+  base.sandbox = sinon.createSandbox({
     useFakeTimers: true
   });
 
@@ -76,7 +76,7 @@ beforeEach(() => {
         const code = Object.keys(REQUIRE_EXTS).reduce((memo, ext) =>
           // Search until we find a non-error resolution.
           memo || base.fileExists(`${mod}${ext}`) && REQUIRE_EXTS[ext](`${mod}${ext}`)
-        , null);
+          , null);
 
         if (code) {
           return code;
