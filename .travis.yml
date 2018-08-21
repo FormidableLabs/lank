@@ -3,10 +3,10 @@ language: node_js
 node_js:
   - "6"
   - "8"
-  # TODO: `mock-fs` doesn't support node10 yet
+  # TODO: `mock-fs` doesn't support `node@10.5+` yet
   # https://github.com/FormidableLabs/lank/issues/9
   # https://github.com/tschaub/mock-fs/issues/238
-  #- "10"
+  - "10.4"
 
 sudo: false
 
