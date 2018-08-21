@@ -1,6 +1,6 @@
 {
   "name": "lank",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Link and control a bunch of repositories.",
   "main": "index.js",
   "repository": "https://github.com/FormidableLabs/lank.git",
