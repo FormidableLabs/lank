@@ -17,8 +17,7 @@ branches:
 cache: yarn
 
 install:
-  - npm install -g yarn
-  - yarn install
+  - yarn install --frozen-lockfile
 
 script:
   - yarn --version

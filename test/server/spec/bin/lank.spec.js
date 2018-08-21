@@ -91,6 +91,21 @@ describe("bin/lank", () => {
 
       return lank(argv());
     });
+
+    it("works with a dot-name project", () => {
+      base.mockFs({
+        ".lankrc.js": toJs({
+          "dot.name": { tags: ["awesome", "hot"] },
+          two: { tags: ["awesome"] }
+        }),
+        "dot.name": {
+          "package.json": JSON.stringify({ name: "dot.name" })
+        },
+        two: {}
+      });
+
+      return lank(argv());
+    });
   });
 
   describe("help", () => {
