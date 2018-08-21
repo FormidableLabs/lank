@@ -91,6 +91,40 @@ describe("bin/lank", () => {
 
       return lank(argv());
     });
+
+    it("doesn't error with a dot-name project", () => {
+      appUtil._cwd.returns(path.resolve("dot.name"));
+      base.mockFs({
+        ".lankrc.js": toJs({
+          "dot.name": { tags: ["awesome", "hot"] },
+          two: { tags: ["awesome"] }
+        }),
+        "dot.name": {
+          "package.json": JSON.stringify({ name: "dot.name" })
+        },
+        two: {}
+      });
+
+      return lank(argv());
+    });
+
+    it("doesn't error with a scoped dot-name project", () => {
+      appUtil._cwd.returns(path.resolve("@scope/dot.name"));
+      base.mockFs({
+        ".lankrc.js": toJs({
+          "@scope/dot.name": { tags: ["awesome", "hot"] },
+          two: { tags: ["awesome"] }
+        }),
+        "@scope": {
+          "dot.name": {
+            "package.json": JSON.stringify({ name: "@scope/dot.name" })
+          }
+        },
+        two: {}
+      });
+
+      return lank(argv());
+    });
   });
 
   describe("help", () => {

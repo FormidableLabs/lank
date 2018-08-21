@@ -32,7 +32,7 @@ const base = module.exports = {
 };
 
 const REQUIRE_EXTS = {
-  ".js": (mod) => _eval(base.fileRead(mod), true),
+  ".js": (mod) => _eval(base.fileRead(mod), mod),
   ".json": (mod) => JSON.parse(base.fileRead(mod))
 };
 
