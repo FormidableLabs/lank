@@ -307,7 +307,7 @@ $ lank exec -s -- npm install
 ```
 
 Sometimes, you only want to exec a command in some projects. This is where the
-`-t, --tags <tags>` flag commes in handy to run based on arbitrary tags and the
+`-t, --tags <tags>` flag comes in handy to run based on arbitrary tags and the
 `-m, --modules <modules>` flag is useful to limit to a list of named projects.
 
 ```sh
