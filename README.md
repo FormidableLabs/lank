@@ -1,4 +1,6 @@
 [![Travis Status][trav_img]][trav_site]
+[![Maintenance Status][maintenance-image]](#maintenance-status)
+
 
 lank
 ====
@@ -17,10 +19,7 @@ More specifically:
    [Node.js `require` resolution](https://nodejs.org/api/modules.html) to
    resolve to the actual checked out projects _instead_ of installed
    `node_modules` dependencies.
-   
-### Maintenance Status: Stable
-
-Formidable is not planning to develop any new features for this project. We are still responding to bug reports and security concerns. We are still welcoming PRs for this project, but PRs that include new features should be small and easy to integrate and should not include breaking changes.
+  
 
 ## Installation
 
@@ -437,5 +436,10 @@ projects instead of what's installed via `yarn|npm install`.
 * TODO(INITIAL): Document - webpack
 * TODO(INITIAL): eslint
 
+### Maintenance Status
+
+**Stable:** Formidable is not planning to develop any new features for this project. We are still responding to bug reports and security concerns. We are still welcoming PRs for this project, but PRs that include new features should be small and easy to integrate and should not include breaking changes.
+
 [trav_img]: https://api.travis-ci.org/FormidableLabs/lank.svg
 [trav_site]: https://travis-ci.org/FormidableLabs/lank
+[maintenance-image]: https://img.shields.io/badge/maintenance-stable-blue.svg
